@@ -143,7 +143,7 @@ const LeaderboardCard: React.FC<LeaderboardCardProps> = ({
 
   return (
     <motion.div
-      className={`relative ${heightClass} rounded-2xl overflow-hidden group transition-all duration-300`}
+      className={`relative ${heightClass} rounded-2xl overflow-hidden group transition-all duration-300 flex-shrink-0`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: entry.rank * 0.1 }}
@@ -166,7 +166,7 @@ const LeaderboardCard: React.FC<LeaderboardCardProps> = ({
       <div className="relative h-full flex flex-col items-center justify-between p-4">
         {/* Avatar */}
         <motion.div
-          className={`w-12 h-12 rounded-full bg-gradient-to-br ${rankColors[entry.rank]} flex items-center justify-center text-sm font-bold text-white`}
+          className={`w-12 h-12 rounded-full bg-gradient-to-br ${rankColors[entry.rank]} flex items-center justify-center text-sm font-bold text-white flex-shrink-0`}
           animate={isHighlight ? { scale: [1, 1.05, 1] } : {}}
           transition={{ duration: 3, repeat: Infinity }}
         >
@@ -190,7 +190,7 @@ const LeaderboardCard: React.FC<LeaderboardCardProps> = ({
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2 + entry.rank * 0.1, duration: 0.4 }}
         >
-          <p className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary tracking-tighter">
+          <p className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary tracking-tighter font-mono">
             {entry.percentage.toFixed(2)}%
           </p>
         </motion.div>
@@ -254,7 +254,7 @@ const AssetNodeComponent: React.FC<AssetNodeComponentProps> = ({ node }) => {
     >
       {/* Node Badge */}
       <motion.div
-        className={`relative flex items-center justify-center w-8 h-8 rounded-lg border border-border ${statusColors[node.status]} -translate-x-1/2 -translate-y-1/2`}
+        className={`relative flex items-center justify-center w-8 h-8 rounded-lg border border-border ${statusColors[node.status]} -translate-x-1/2 -translate-y-1/2 flex-shrink-0`}
         animate={{
           scale: [1, 1.15, 1],
           boxShadow: [
@@ -277,16 +277,16 @@ const AssetNodeComponent: React.FC<AssetNodeComponentProps> = ({ node }) => {
             exit={{ opacity: 0, x: -8 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="gemini-blur-card p-3 min-w-max">
+            <div className="gemini-blur-card p-3 min-w-max max-w-xs">
               {/* Label */}
-              <p className="text-xs font-semibold text-white mb-2">
+              <p className="text-xs font-semibold text-white mb-2 truncate">
                 {node.label}
               </p>
 
               {/* Coordinates */}
-              <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground min-w-0">
                 <MapPin className="w-3 h-3 flex-shrink-0" />
-                <span>
+                <span className="truncate font-mono">
                   {node.coordinates.lat}, {node.coordinates.lon}
                 </span>
               </div>
@@ -297,7 +297,7 @@ const AssetNodeComponent: React.FC<AssetNodeComponentProps> = ({ node }) => {
                 <div className="flex-1">
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <span className="text-xs text-muted-foreground">Signal</span>
-                    <span className="text-xs font-bold text-primary">
+                    <span className="text-xs font-bold text-primary font-mono flex-shrink-0">
                       {node.connectivity}%
                     </span>
                   </div>
@@ -315,7 +315,7 @@ const AssetNodeComponent: React.FC<AssetNodeComponentProps> = ({ node }) => {
               {/* Status Badge */}
               <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-2">
                 <div
-                  className={`w-2 h-2 rounded-full ${statusColors[node.status]}`}
+                  className={`w-2 h-2 rounded-full ${statusColors[node.status]} flex-shrink-0`}
                 />
                 <span className="text-xs font-medium text-muted-foreground capitalize">
                   {node.status}
@@ -334,8 +334,6 @@ const AssetNodeComponent: React.FC<AssetNodeComponentProps> = ({ node }) => {
    ============================================================================ */
 
 const SpatialAssetRadar: React.FC = () => {
-  const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
-
   const activeCount = useMemo(
     () => assetNodes.filter((n) => n.status === 'active').length,
     []
@@ -345,7 +343,7 @@ const SpatialAssetRadar: React.FC = () => {
     <div className="relative h-full w-full rounded-2xl overflow-hidden bg-background border border-border">
       {/* Grid Lines Background */}
       <svg
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ opacity: 0.15 }}
       >
         {/* Vertical grid lines */}
@@ -397,8 +395,6 @@ const SpatialAssetRadar: React.FC = () => {
         {assetNodes.map((node) => (
           <motion.div
             key={node.id}
-            onMouseEnter={() => setActiveNodeId(node.id)}
-            onMouseLeave={() => setActiveNodeId(null)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 * parseInt(node.id) }}
@@ -409,7 +405,7 @@ const SpatialAssetRadar: React.FC = () => {
       </div>
 
       {/* Header Stats */}
-      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
+      <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between flex-shrink-0">
         {/* Title */}
         <div>
           <p className="text-xs font-bold text-muted-foreground tracking-widest uppercase">
@@ -420,37 +416,37 @@ const SpatialAssetRadar: React.FC = () => {
 
         {/* Active Count Badge */}
         <motion.div
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex-shrink-0"
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <Activity className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs font-bold text-emerald-400">
+          <Activity className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+          <span className="text-xs font-bold text-emerald-400 font-mono">
             {activeCount}/{assetNodes.length} Active
           </span>
         </motion.div>
       </div>
 
       {/* Corner Labels for Coordinates */}
-      <div className="absolute bottom-4 left-4 text-xs text-muted-foreground/50 font-mono">
+      <div className="absolute bottom-4 left-4 text-xs text-muted-foreground/50 font-mono flex-shrink-0">
         (40.71°N, 74.00°W)
       </div>
-      <div className="absolute bottom-4 right-4 text-xs text-muted-foreground/50 font-mono">
+      <div className="absolute bottom-4 right-4 text-xs text-muted-foreground/50 font-mono flex-shrink-0">
         (40.72°N, 74.01°W)
       </div>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 z-10">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 z-10 flex-shrink-0 flex-wrap justify-center">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
           <span>Active</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <div className="w-2 h-2 rounded-full bg-amber-500" />
+          <div className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" />
           <span>Idle</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <div className="w-2 h-2 rounded-full bg-rose-500" />
+          <div className="w-2 h-2 rounded-full bg-rose-500 flex-shrink-0" />
           <span>Offline</span>
         </div>
       </div>
@@ -468,11 +464,11 @@ export const BottomPanel: React.FC = () => {
   const thirdPlace = leaderboardData.find((e) => e.rank === 3)!;
 
   return (
-    <div className="h-full w-full flex gap-6">
+    <div className="h-full w-full flex gap-6 overflow-hidden">
       {/* Left Split-Pane: Academic Achievement Leaderboard */}
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="mb-4">
+        <div className="mb-4 flex-shrink-0">
           <p className="text-xs font-bold text-muted-foreground tracking-widest uppercase">
             Performance
           </p>
@@ -485,9 +481,9 @@ export const BottomPanel: React.FC = () => {
         </div>
 
         {/* Podium Layout */}
-        <div className="flex-1 flex items-end justify-center gap-4">
+        <div className="flex-1 flex items-end justify-center gap-4 min-h-0 overflow-hidden">
           {/* 2nd Place (Left) */}
-          <div className="flex-1 flex items-end justify-end">
+          <div className="flex-1 flex items-end justify-end min-h-0 overflow-hidden">
             <motion.div
               className="w-full max-w-xs"
               initial={{ opacity: 0, x: -20 }}
@@ -499,7 +495,7 @@ export const BottomPanel: React.FC = () => {
           </div>
 
           {/* 1st Place (Center) - Elevated */}
-          <div className="flex-1 flex items-end justify-center mb-4">
+          <div className="flex-1 flex items-end justify-center mb-4 min-h-0 overflow-hidden">
             <motion.div
               className="w-full max-w-xs"
               initial={{ opacity: 0, y: 30 }}
@@ -511,7 +507,7 @@ export const BottomPanel: React.FC = () => {
           </div>
 
           {/* 3rd Place (Right) */}
-          <div className="flex-1 flex items-end justify-start">
+          <div className="flex-1 flex items-end justify-start min-h-0 overflow-hidden">
             <motion.div
               className="w-full max-w-xs"
               initial={{ opacity: 0, x: 20 }}
@@ -525,28 +521,28 @@ export const BottomPanel: React.FC = () => {
 
         {/* Footer Stats */}
         <motion.div
-          className="mt-6 pt-4 border-t border-border flex items-center gap-4"
+          className="mt-6 pt-4 border-t border-border flex items-center gap-4 flex-shrink-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
           <div className="flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-primary" />
+            <Trophy className="w-4 h-4 text-primary flex-shrink-0" />
             <span className="text-xs font-medium text-muted-foreground">
               Top tier average:
             </span>
-            <span className="text-sm font-bold text-white">98.48%</span>
+            <span className="text-sm font-bold text-white font-mono">98.48%</span>
           </div>
         </motion.div>
       </div>
 
       {/* Divider */}
-      <div className="w-px bg-border" />
+      <div className="w-px bg-border flex-shrink-0" />
 
       {/* Right Split-Pane: Spatial Asset Fleet Radar */}
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="mb-4">
+        <div className="mb-4 flex-shrink-0">
           <p className="text-xs font-bold text-muted-foreground tracking-widest uppercase">
             Infrastructure
           </p>
@@ -559,7 +555,7 @@ export const BottomPanel: React.FC = () => {
         </div>
 
         {/* Radar Canvas */}
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 overflow-hidden">
           <SpatialAssetRadar />
         </div>
       </div>
