@@ -169,13 +169,14 @@ const CommandItemComponent: React.FC<CommandItemComponentProps> = ({
       }`}
       whileHover={{ x: 4 }}
       whileTap={{ scale: 0.98 }}
+      type="button"
     >
       {/* Left Content */}
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <div
           className={`${
             isHighlighted ? 'text-primary' : 'text-muted-foreground'
-          }`}
+          } flex-shrink-0`}
         >
           {item.icon}
         </div>
@@ -196,8 +197,9 @@ const CommandItemComponent: React.FC<CommandItemComponentProps> = ({
         <motion.div
           initial={{ opacity: 0, x: -4 }}
           animate={{ opacity: 1, x: 0 }}
+          className="flex-shrink-0"
         >
-          <ChevronRight className="w-4 h-4 text-primary flex-shrink-0" />
+          <ChevronRight className="w-4 h-4 text-primary" />
         </motion.div>
       )}
     </motion.button>
@@ -237,7 +239,7 @@ const AIActionLoader: React.FC<AIActionLoaderProps> = ({
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="gemini-blur-card px-8 py-6 max-w-md text-center"
+        className="gemini-blur-card px-8 py-6 max-w-md text-center overflow-y-auto max-h-[90vh]"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
@@ -246,7 +248,7 @@ const AIActionLoader: React.FC<AIActionLoaderProps> = ({
           <>
             {/* Rotating Loader */}
             <motion.div
-              className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center"
+              className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0"
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, linear: true }}
             >
@@ -274,7 +276,7 @@ const AIActionLoader: React.FC<AIActionLoaderProps> = ({
           <>
             {/* Success Checkmark */}
             <motion.div
-              className="w-12 h-12 mx-auto mb-4 rounded-lg bg-emerald-500/20 flex items-center justify-center"
+              className="w-12 h-12 mx-auto mb-4 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0"
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 20 }}
@@ -442,9 +444,10 @@ export const OmniSearch: React.FC = () => {
         className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-3 py-2 rounded-lg bg-background border border-border hover:border-primary/50 transition-colors"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        type="button"
       >
         <Search className="w-4 h-4 text-muted-foreground" />
-        <span className="text-xs font-medium text-muted-foreground">
+        <span className="text-xs font-medium text-muted-foreground font-mono">
           ⌘K
         </span>
       </motion.button>
@@ -464,15 +467,15 @@ export const OmniSearch: React.FC = () => {
 
             {/* Command Palette */}
             <motion.div
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl overflow-hidden"
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
-              <div className="gemini-blur-card overflow-hidden">
+              <div className="gemini-blur-card overflow-hidden flex flex-col max-h-[90vh]">
                 {/* Search Input */}
-                <div className="px-6 py-4 border-b border-border/50">
+                <div className="px-6 py-4 border-b border-border/50 flex-shrink-0">
                   <div className="relative flex items-center">
                     <Search className="absolute left-0 w-5 h-5 text-muted-foreground pointer-events-none" />
                     <input
@@ -497,7 +500,7 @@ export const OmniSearch: React.FC = () => {
                 </div>
 
                 {/* Results List */}
-                <div className="max-h-96 overflow-y-auto">
+                <div className="overflow-y-auto flex-1">
                   {allFilteredItems.length === 0 ? (
                     <motion.div
                       className="px-6 py-12 text-center"
@@ -522,7 +525,7 @@ export const OmniSearch: React.FC = () => {
                           >
                             {/* Group Header */}
                             <div className="px-2 mb-2">
-                              <p className="text-xs font-semibold text-primary tracking-widest uppercase">
+                              <p className="text-xs font-semibold text-primary tracking-widest uppercase font-mono">
                                 {group.label}
                               </p>
                             </div>
@@ -554,7 +557,7 @@ export const OmniSearch: React.FC = () => {
 
                 {/* Footer Hints */}
                 <motion.div
-                  className="px-6 py-3 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground"
+                  className="px-6 py-3 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground flex-shrink-0"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
