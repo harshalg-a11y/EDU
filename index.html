@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EduSphere Central - Education Management Dashboard">
+  <meta name="theme-color" content="#020406">
+  
+  <title>EduSphere Central - Dashboard</title>
+  
+  <!-- Stylesheet: Gemini Obsidian Design System -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' fill='%236B5AFF'>🎓</text></svg>">
+  
+  <!-- Preconnect to APIs -->
+  <link rel="preconnect" href="http://localhost:8000">
+</head>
+<body>
+  <!-- ============================================================================
+       AUTHENTICATION OVERLAY - Beautiful Login Interface
+       ============================================================================ -->
+  
+  <div class="overlay" id="authOverlay">
+    <div class="modal auth-modal">
+      <!-- Auth Modal Header -->
+      <div class="modal-header auth-header">
+        <div class="auth-branding">
+          <span class="auth-icon">🎓</span>
+          <span class="auth-title">EduSphere Central</span>
+        </div>
+      </div>
+      
+      <!-- Auth Modal Body -->
+      <div class="modal-body auth-body">
+        <h2 class="auth-heading">Welcome Back</h2>
+        <p class="auth-subtitle">Sign in to your education management dashboard</p>
+        
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form">
+          <!-- Email Input -->
+          <div class="form-group">
+            <label for="emailInput" class="form-label">Email Address</label>
+            <div class="input-wrapper">
+              <input
+                type="email"
+                id="emailInput"
+                class="form-input auth-input"
+                placeholder="admin@edusphere.local"
+                required
+              >
+              <span class="input-icon">📧</span>
+            </div>
+          </div>
+          
+          <!-- Password Input -->
+          <div class="form-group">
+            <label for="passwordInput" class="form-label">Password</label>
+            <div class="input-wrapper">
+              <input
+                type="password"
+                id="passwordInput"
+                class="form-input auth-input"
+                placeholder="••••••••••••"
+                required
+              >
+              <span class="input-icon">🔒</span>
+            </div>
+          </div>
+          
+          <!-- Remember Me Checkbox -->
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rememberMe" class="checkbox-input">
+              <span>Remember me for 30 days</span>
+            </label>
+          </div>
+          
+          <!-- Login Button -->
+          <button type="submit" class="btn btn-primary btn-login">
+            <span>Sign In</span>
+            <span>→</span>
+          </button>
+        </form>
+        
+        <!-- Help Text -->
+        <div class="auth-footer">
+          <a href="#" class="auth-link">Forgot password?</a>
+          <span class="separator">•</span>
+          <a href="#" class="auth-link">Contact support</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================================
+       MAIN VIEWPORT ROOT - Asymmetric Layout Shell
+       ============================================================================ -->
+  
+  <div class="viewport-root" id="mainViewport">
+    
+    <!-- ====================================================================
+         LEFT SIDEBAR NAVIGATION RAILS - Minimalist Profile
+         ==================================================================== -->
+    
+    <aside class="sidebar-container" id="sidebarNav">
+      <!-- Sidebar Brand -->
+      <div class="sidebar-brand" title="Dashboard Home">
+        🎓
+      </div>
+      
+      <!-- Navigation Button Stack -->
+      <nav class="nav-button-stack">
+        <!-- Dashboard Button -->
+        <button
+          class="nav-button active"
+          data-nav="dashboard"
+          title="Dashboard Overview"
+        >
+          <span class="nav-button-icon">📊</span>
+          <span class="nav-button-label">Dashboard</span>
+        </button>
+        
+        <!-- Command Palette Button -->
+        <button
+          class="nav-button"
+          data-nav="command"
+          title="Command Palette (Cmd+K)"
+        >
+          <span class="nav-button-icon">⌘</span>
+          <span class="nav-button-label">Command</span>
+        </button>
+        
+        <!-- Student Tracks Button -->
+        <button
+          class="nav-button"
+          data-nav="students"
+          title="Student Tracks & Profiles"
+        >
+          <span class="nav-button-icon">👥</span>
+          <span class="nav-button-label">Students</span>
+        </button>
+        
+        <!-- Scheduler Button -->
+        <button
+          class="nav-button"
+          data-nav="scheduler"
+          title="Class Schedule & Rooms"
+        >
+          <span class="nav-button-icon">🎛️</span>
+          <span class="nav-button-label">Scheduler</span>
+        </button>
+      </nav>
+      
+      <!-- Sidebar Spacer -->
+      <div class="sidebar-spacer"></div>
+      
+      <!-- Sidebar Profile Section -->
+      <div class="sidebar-profile" title="Admin Profile">
+        👤
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         MAIN CONTENT CANVAS - Curved Inward Border
+         ==================================================================== -->
+    
+    <main class="canvas-board" id="mainCanvas">
+      <div class="canvas-content">
+        
+        <!-- ================================================================
+             SECTION 1: METRIC DECK - 4 Core Dashboard Metrics
+             ================================================================ -->
+        
+        <section class="content-section" id="metricsSection">
+          <h2 class="section-title">System Overview</h2>
+          
+          <!-- Metrics Grid Container -->
+          <div class="metrics-container" id="metricsGrid">
+            <!-- Metrics will be populated via JavaScript from API -->
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 2: DUAL-COLUMN LAYOUT - Heatmap + Alerts
+             ================================================================ -->
+        
+        <section class="content-section dual-column-layout">
+          <!-- Left Column: Calendar Attendance Heatmap -->
+          <div class="column-left">
+            <div class="heatmap-container">
+              <h3 class="heatmap-title">📅 Weekly Scheduling Density</h3>
+              
+              <!-- Heatmap Grid Wrapper -->
+              <div class="heatmap-grid-wrapper">
+                <div class="heatmap-grid" id="heatmapGrid">
+                  <!-- Heatmap cells will be generated via JavaScript -->
+                </div>
+              </div>
+              
+              <!-- Legend -->
+              <div class="heatmap-legend">
+                <div class="legend-label">Density Level</div>
+                <div class="legend-items">
+                  <div class="legend-item">
+                    <div class="legend-box" style="background-color: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.15);"></div>
+                    <span class="legend-item-label">Low</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-box" style="background-color: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.15);"></div>
+                    <span class="legend-item-label">Medium</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-box" style="background-color: rgba(75, 85, 99, 0.08); border-color: rgba(75, 85, 99, 0.2);"></div>
+                    <span class="legend-item-label">High</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-box" style="background-color: rgba(139, 92, 246, 0.12); border-color: rgba(139, 92, 246, 0.25);"></div>
+                    <span class="legend-item-label">Critical</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Column: Operational Alerts Stream -->
+          <div class="column-right">
+            <div class="alerts-container">
+              <h3 class="section-title">⚠️ Operational Alerts</h3>
+              
+              <!-- Conflicts/Alerts will be populated via JavaScript from API -->
+              <div class="conflicts-container" id="conflictsContainer">
+                <!-- Alert cards will be generated here -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 3: LEADERBOARD PODIUMS - Top Performers
+             ================================================================ -->
+        
+        <section class="content-section" id="podiumsSection">
+          <h2 class="section-title">🏆 Top Performers</h2>
+          
+          <!-- Podiums Container -->
+          <div class="podiums-container">
+            <div class="podiums-grid" id="podiumsGrid">
+              <!-- Podium cards will be generated via JavaScript -->
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================================
+       SCRIPTS
+       ============================================================================ -->
+  
+  <!-- API Client & Application Logic -->
+  <script>
+    /**
+     * ============================================================================
+     * EDUSPHERE DASHBOARD - Main Application
+     * ============================================================================
+     * 
+     * Handles:
+     * - API communication with FastAPI backend
+     * - Dashboard data population
+     * - User interactions
+     * - Real-time conflict management
+     */
+
+    const API_BASE = 'http://localhost:8000/api';
+    const APP = {
+      authenticated: false,
+      metrics: [],
+      conflicts: [],
+      heatmapData: [],
+    };
+
+    /**
+     * Initialize Application
+     */
+    function initApp() {
+      console.log('🚀 Initializing EduSphere Central Dashboard');
+      
+      setupEventListeners();
+      checkAuthentication();
+    }
+
+    /**
+     * Setup Event Listeners
+     */
+    function setupEventListeners() {
+      // Login Form
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+      }
+
+      // Navigation Buttons
+      document.querySelectorAll('.nav-button').forEach(btn => {
+        btn.addEventListener('click', handleNavigation);
+      });
+
+      // Conflict Resolve Buttons (delegated)
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.btn-resolve-conflict')) {
+          const conflictId = e.target.closest('.btn-resolve-conflict').dataset.conflictId;
+          handleResolveConflict(conflictId);
+        }
+      });
+    }
+
+    /**
+     * Check Authentication Status
+     */
+    function checkAuthentication() {
+      const isAuthenticated = sessionStorage.getItem('authToken');
+      
+      if (isAuthenticated) {
+        APP.authenticated = true;
+        hideAuthOverlay();
+        loadDashboard();
+      } else {
+        showAuthOverlay();
+      }
+    }
+
+    /**
+     * Show Authentication Overlay
+     */
+    function showAuthOverlay() {
+      const overlay = document.getElementById('authOverlay');
+      overlay.classList.add('active');
+      document.getElementById('mainViewport').style.display = 'none';
+    }
+
+    /**
+     * Hide Authentication Overlay
+     */
+    function hideAuthOverlay() {
+      const overlay = document.getElementById('authOverlay');
+      overlay.classList.remove('active');
+      overlay.style.display = 'none';
+      document.getElementById('mainViewport').style.display = 'flex';
+    }
+
+    /**
+     * Handle Login Form Submission
+     */
+    async function handleLogin(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      const rememberMe = document.getElementById('rememberMe').checked;
+
+      console.log('🔐 Login attempt:', { email, rememberMe });
+
+      // Simulate authentication (in production, validate against backend)
+      if (email && password.length >= 6) {
+        sessionStorage.setItem('authToken', 'token_' + Date.now());
+        sessionStorage.setItem('userEmail', email);
+        
+        APP.authenticated = true;
+        hideAuthOverlay();
+        loadDashboard();
+      } else {
+        alert('❌ Invalid email or password');
+      }
+    }
+
+    /**
+     * Handle Navigation Button Clicks
+     */
+    function handleNavigation(e) {
+      const navBtn = e.currentTarget;
+      const section = navBtn.dataset.nav;
+
+      // Update active button
+      document.querySelectorAll('.nav-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      navBtn.classList.add('active');
+
+      console.log(`📍 Navigating to: ${section}`);
+    }
+
+    /**
+     * Load Dashboard Data
+     */
+    async function loadDashboard() {
+      try {
+        console.log('📊 Loading dashboard data...');
+        
+        // Fetch Metrics
+        await fetchMetrics();
+        
+        // Fetch Conflicts
+        await fetchConflicts();
+        
+        // Generate Heatmap
+        generateHeatmap();
+        
+        // Render Podiums (mock data)
+        renderPodiums();
+
+      } catch (error) {
+        console.error('❌ Error loading dashboard:', error);
+      }
+    }
+
+    /**
+     * Fetch Metrics from API
+     */
+    async function fetchMetrics() {
+      try {
+        const response = await fetch(`${API_BASE}/metrics`);
+        const data = await response.json();
+        
+        APP.metrics = data;
+        renderMetrics(data);
+        
+        console.log('✅ Metrics loaded:', data);
+      } catch (error) {
+        console.error('❌ Error fetching metrics:', error);
+      }
+    }
+
+    /**
+     * Render Metrics Grid
+     */
+    function renderMetrics(metrics) {
+      const container = document.getElementById('metricsGrid');
+      container.innerHTML = '';
+
+      metrics.forEach(metric => {
+        const card = document.createElement('div');
+        card.className = 'metric-card animate-fade-in';
+        card.innerHTML = `
+          <div class="metric-icon">${metric.icon}</div>
+          <div class="metric-value">${metric.value}</div>
+          <div class="metric-label">${metric.name}</div>
+          <div class="metric-unit">${metric.unit}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    /**
+     * Fetch Conflicts from API
+     */
+    async function fetchConflicts() {
+      try {
+        const response = await fetch(`${API_BASE}/conflicts`);
+        const data = await response.json();
+        
+        APP.conflicts = data;
+        renderConflicts(data);
+        
+        console.log('✅ Conflicts loaded:', data);
+      } catch (error) {
+        console.error('❌ Error fetching conflicts:', error);
+      }
+    }
+
+    /**
+     * Render Conflicts/Alerts
+     */
+    function renderConflicts(conflicts) {
+      const container = document.getElementById('conflictsContainer');
+      container.innerHTML = '';
+
+      if (conflicts.length === 0) {
+        container.innerHTML = '<p class="text-muted" style="text-align: center; padding: 2rem;">✅ No active conflicts detected</p>';
+        return;
+      }
+
+      conflicts.forEach(conflict => {
+        const card = document.createElement('div');
+        card.className = `conflict-card severity-${conflict.severity} animate-slide-up`;
+        card.innerHTML = `
+          <div class="conflict-header">
+            <h4 class="conflict-title">${conflict.title}</h4>
+            <span class="severity-badge ${conflict.severity}">${conflict.severity.toUpperCase()}</span>
+          </div>
+          <p class="conflict-description">${conflict.description}</p>
+          <div class="conflict-meta">
+            <span>${conflict.room_id || 'System'}</span>
+            <button class="btn-resolve-conflict" data-conflict-id="${conflict.id}">Resolve</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    /**
+     * Handle Conflict Resolution
+     */
+    async function handleResolveConflict(conflictId) {
+      try {
+        console.log(`🔧 Resolving conflict: ${conflictId}`);
+        
+        const response = await fetch(`${API_BASE}/conflicts/resolve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: conflictId }),
+        });
+
+        const updatedConflicts = await response.json();
+        APP.conflicts = updatedConflicts;
+        renderConflicts(updatedConflicts);
+
+        console.log('✅ Conflict resolved, conflicts updated:', updatedConflicts);
+      } catch (error) {
+        console.error('❌ Error resolving conflict:', error);
+      }
+    }
+
+    /**
+     * Generate Heatmap Grid
+     */
+    function generateHeatmap() {
+      const grid = document.getElementById('heatmapGrid');
+      grid.innerHTML = '';
+
+      const rows = 6;
+      const cols = 24;
+      const levels = ['level-0', 'level-1', 'level-2', 'level-3'];
+
+      for (let i = 0; i < rows * cols; i++) {
+        const cell = document.createElement('div');
+        const randomLevel = levels[Math.floor(Math.random() * levels.length)];
+        cell.className = `heatmap-cell ${randomLevel}`;
+        cell.title = `Week ${Math.floor(i / cols) + 1}, Day ${(i % cols) + 1}`;
+        grid.appendChild(cell);
+      }
+
+      console.log('✅ Heatmap generated');
+    }
+
+    /**
+     * Render Podiums (Mock Data)
+     */
+    function renderPodiums() {
+      const grid = document.getElementById('podiumsGrid');
+      grid.innerHTML = '';
+
+      const podiums = [
+        {
+          rank: 2,
+          name: 'Sophia Martinez',
+          grade: 'Grade 11',
+          percentage: 98.45,
+          initials: 'SM',
+        },
+        {
+          rank: 1,
+          name: 'Rayan Hassan',
+          grade: 'Grade 11',
+          percentage: 99.88,
+          initials: 'RH',
+        },
+        {
+          rank: 3,
+          name: 'Emma Chen',
+          grade: 'Grade 10',
+          percentage: 97.92,
+          initials: 'EC',
+        },
+      ];
+
+      // Sort by rank and display: 2nd, 1st, 3rd
+      const displayOrder = [podiums[1], podiums[0], podiums[2]];
+
+      displayOrder.forEach((student) => {
+        const card = document.createElement('div');
+        card.className = `podium-card rank-${student.rank} animate-slide-up`;
+        card.innerHTML = `
+          <div class="rank-badge">#${student.rank}</div>
+          <div class="avatar-ring">${student.initials}</div>
+          <h4 class="student-name">${student.name}</h4>
+          <p class="student-grade">${student.grade}</p>
+          <div class="performance-percent">${student.percentage.toFixed(2)}%</div>
+        `;
+        grid.appendChild(card);
+      });
+
+      console.log('✅ Podiums rendered');
+    }
+
+    /**
+     * Start Application on DOM Ready
+     */
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+
+  <!-- Inline Styles for Auth Modal Specifics -->
+  <style>
+    /* Auth Modal Specific Styles */
+    .auth-modal {
+      animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .auth-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem !important;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(16, 185, 129, 0.05));
+    }
+
+    .auth-branding {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .auth-icon {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .auth-title {
+      background: linear-gradient(135deg, #6b5aff, #00d084);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-body {
+      padding: 2rem !important;
+    }
+
+    .auth-heading {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .auth-input {
+      padding-right: 2.75rem !important;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 1rem;
+      font-size: 1.1rem;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .checkbox-input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--accent-primary);
+    }
+
+    .btn-login {
+      padding: 0.9rem 1.5rem !important;
+      font-size: 1rem !important;
+      margin-top: 0.5rem;
+    }
+
+    .auth-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      border-top: 1px solid var(--border-laser);
+      padding-top: 1.5rem;
+    }
+
+    .auth-link {
+      color: var(--accent-primary);
+      text-decoration: none;
+      transition: var(--transition-smooth);
+    }
+
+    .auth-link:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+
+    .separator {
+      opacity: 0.3;
+    }
+
+    /* Dual Column Layout */
+    .dual-column-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .column-left,
+    .column-right {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .alerts-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Conflict Resolve Button */
+    .btn-resolve-conflict {
+      padding: 0.4rem 0.8rem;
+      background-color: rgba(107, 90, 255, 0.1);
+      border: 1px solid var(--accent-primary);
+      border-radius: 0.375rem;
+      color: var(--accent-primary);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-resolve-conflict:hover {
+      background-color: rgba(107, 90, 255, 0.2);
+      box-shadow: 0 0 12px rgba(107, 90, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .dual-column-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .auth-heading {
+        font-size: 1.5rem;
+      }
+
+      .auth-branding {
+        gap: 0.5rem;
+      }
+
+      .auth-icon {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</body>
+</html>
