@@ -1,14 +1,21 @@
 """
-EduSphere Central - Calendar Attendance Matrix & OmniSearch Command Menu
-Pure Python Reflex frontend with pristine calendar grid layout and universal command palette.
-High-fidelity contribution grid heatmap with 6×24 micro-box matrix.
-Peak-tier cinematic Gemini aesthetic with glass morphism surfaces and ambient light projections.
+EduSphere Central - Complete Master UI Module
+Peak-tier cinematic Gemini aesthetic with glass morphism, high-fidelity grids,
+and beautiful OmniSearch keyboard overlay with defensive layout verification.
+
+Master compiled module integrating:
+- Calendar attendance heatmap (6×24 micro-box matrix)
+- OmniSearch command palette (Cmd+K activation)
+- Ranking podiums (1st place prominent center)
+- Minimalist sidebar navigation
+- Curved canvas board with inward left border
 """
 
 import reflex as rx
 from typing import List, Dict, Tuple, Optional
 from enum import Enum as PyEnum
 from dataclasses import dataclass
+import random
 
 
 # ============================================================================
@@ -27,35 +34,28 @@ class ColorToken(str, PyEnum):
     - Shadow Mapping: Ambient vector lighting with muted glows
     """
     # Canvas & surfaces
-    BACKGROUND_OBSIDIAN = "#020406"          # Absolute deep obsidian black (canvas)
-    GLASS_SURFACE = "rgba(10, 15, 26, 0.45)" # Ultra-translucent frosted ink
-    BORDER_LASER_SPEC = "rgba(255, 255, 255, 0.05)"  # Ultra-thin laser border
+    BACKGROUND_OBSIDIAN = "#020406"
+    SIDEBAR_DARK = "#0a0e1a"
+    GLASS_SURFACE = "rgba(10, 15, 26, 0.45)"
+    BORDER_LASER_SPEC = "rgba(255, 255, 255, 0.05)"
     
     # Typography
-    TEXT_PRIMARY = "#FFFFFF"                 # Pure white text
-    TEXT_SECONDARY = "#A0A0A0"               # Muted gray
-    TEXT_MICRO = "#808080"                   # Micro-text gray
+    TEXT_PRIMARY = "#FFFFFF"
+    TEXT_SECONDARY = "#A0A0A0"
+    TEXT_MICRO = "#808080"
     
-    # Accent colors (with shadow mappings)
-    ACCENT_PRIMARY = "#6B5AFF"               # Violet accent
-    ACCENT_HOVER = "#7D6FFF"                 # Hover state
+    # Accent colors
+    ACCENT_PRIMARY = "#6B5AFF"
+    ACCENT_HOVER = "#7D6FFF"
     
     # Status colors
-    STATUS_SUCCESS = "#00D084"               # Success green (emerald)
-    STATUS_WARNING = "#FFA500"               # Warning amber
-    STATUS_CRITICAL = "#EF4444"              # Critical red (coral)
+    STATUS_SUCCESS = "#00D084"
+    STATUS_WARNING = "#FFA500"
+    STATUS_CRITICAL = "#EF4444"
     
-    # Legacy compatibility (kept for grid)
-    CARD_SLATE = "#121622"
-    BORDER_LASER = "#1E1F2E"
-    
-    # Calendar grid color variants (emerald, amber, deep slate)
-    GRID_EMERALD_100 = "#10B981"
-    GRID_EMERALD_50 = "#059669"
-    GRID_AMBER_100 = "#F59E0B"
-    GRID_AMBER_50 = "#D97706"
-    GRID_SLATE_100 = "#4B5563"
-    GRID_SLATE_50 = "#2D3748"
+    # Glow colors
+    GLOW_EMERALD = "rgba(16, 185, 129, 0.3)"
+    GLOW_VIOLET = "rgba(139, 92, 246, 0.3)"
 
 
 class FontFamily(str, PyEnum):
@@ -65,26 +65,17 @@ class FontFamily(str, PyEnum):
 
 
 class ShadowMapping(str, PyEnum):
-    """
-    Advanced shadow projection mappings for ambient vector lighting.
-    Each shadow represents soft, muted glowing light hitting card edges.
-    """
-    # Coral/Red shadow (critical, error states)
+    """Advanced shadow projection mappings for ambient vector lighting."""
     CORAL = "0 10px 40px -10px rgba(239, 68, 68, 0.12)"
-    
-    # Violet shadow (primary accent, interactive states)
     VIOLET = "0 10px 40px -10px rgba(139, 92, 246, 0.12)"
-    
-    # Emerald shadow (success states)
     EMERALD = "0 10px 40px -10px rgba(16, 185, 129, 0.12)"
-    
-    # Amber shadow (warning states)
     AMBER = "0 10px 40px -10px rgba(245, 158, 11, 0.12)"
 
 
 class TransitionProfile(str, PyEnum):
     """Micro-transition timing for smooth bezier curve response."""
     GLASS_HOVER = "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
+    SEARCH_PULSE = "all 0.3s cubic-bezier(0.4, 0, 0.6, 1)"
 
 
 # ============================================================================
@@ -98,25 +89,6 @@ def get_glass_panel_style(
 ) -> Dict[str, str]:
     """
     Generate peak-tier cinematic glass panel styling with ambient light projections.
-    
-    This function creates a frosted glass surface with advanced shadow mapping
-    that simulates soft, ambient vector lighting hitting the panel edges.
-    
-    Args:
-        accent_color: Accent color for border glow on hover (optional)
-        shadow_map: ShadowMapping preset for ambient light projection (optional)
-        interactive: Enable micro-transitions and hover effects (default: True)
-        
-    Returns:
-        Dictionary of CSS styling properties for glass morphism effect
-        
-    Specifications:
-    - Background: Ultra-translucent frosted ink (rgba(10, 15, 26, 0.45))
-    - Backdrop Filter: 30px frosted glass effect
-    - Border: 1px solid rgba(255, 255, 255, 0.05)
-    - Shadow: Ambient vector lighting glow (muted, -10px offset)
-    - Transition: Smooth cubic-bezier(0.16, 1, 0.3, 1) at 0.4s
-    - Hover Scale: 1.01% (1.0001x) upward micro-scale
     """
     base_style = {
         "background_color": ColorToken.GLASS_SURFACE,
@@ -143,9 +115,9 @@ def get_glass_panel_style(
 
 class SchedulingDensity(str, PyEnum):
     """Traffic density levels for color coding."""
-    LOW = "low"           # Emerald (underutilized)
-    MEDIUM = "medium"     # Amber (optimal)
-    HIGH = "high"         # Deep slate (overutilized)
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
 
 
 @dataclass
@@ -154,13 +126,23 @@ class SearchResult:
     id: str
     title: str
     description: str
-    category: str  # "Student Tracks", "Room Optimization", "System Actions"
+    category: str
     icon: str
     action: Optional[str] = None
 
 
+@dataclass
+class StudentRanking:
+    """Student ranking entry data."""
+    rank: int
+    name: str
+    grade: str
+    percentage: float
+    initials: str
+
+
 # ============================================================================
-#    MOCK DATA - Search Index
+#    MOCK DATA - Search Index & Rankings
 # ============================================================================
 
 STUDENT_TRACKS_INDEX = [
@@ -263,34 +245,53 @@ SYSTEM_ACTIONS_INDEX = [
     ),
 ]
 
-# Combined search index
 GLOBAL_SEARCH_INDEX = STUDENT_TRACKS_INDEX + ROOM_OPTIMIZATION_INDEX + SYSTEM_ACTIONS_INDEX
 
+STUDENT_RANKINGS = [
+    StudentRanking(
+        rank=2,
+        name="Sophia Martinez",
+        grade="Grade 11",
+        percentage=98.45,
+        initials="SM",
+    ),
+    StudentRanking(
+        rank=1,
+        name="Rayan Hassan",
+        grade="Grade 11",
+        percentage=99.88,
+        initials="RH",
+    ),
+    StudentRanking(
+        rank=3,
+        name="Emma Chen",
+        grade="Grade 10",
+        percentage=97.92,
+        initials="EC",
+    ),
+]
+
+
+# ============================================================================
+#    DATA GENERATORS - Calendar Grid
+# ============================================================================
 
 def generate_calendar_grid_data() -> List[List[SchedulingDensity]]:
-    """
-    Generate 6×24 calendar matrix with mock scheduling density data.
+    """Generate 6×24 calendar matrix with mock scheduling density data."""
+    rows_count: int = 6
+    cols_count: int = 24
     
-    Returns:
-        6 rows × 24 columns matrix with SchedulingDensity values
-    """
-    import random
-    
-    rows_count = 6
-    cols_count = 24
-    
-    grid_data = []
+    grid_data: List[List[SchedulingDensity]] = []
     for row in range(rows_count):
-        row_data = []
+        row_data: List[SchedulingDensity] = []
         for col in range(cols_count):
-            # Assign random density with bias toward medium
-            rand = random.random()
+            rand: float = random.random()
             if rand < 0.25:
-                density = SchedulingDensity.LOW
+                density: SchedulingDensity = SchedulingDensity.LOW
             elif rand < 0.70:
-                density = SchedulingDensity.MEDIUM
+                density: SchedulingDensity = SchedulingDensity.MEDIUM
             else:
-                density = SchedulingDensity.HIGH
+                density: SchedulingDensity = SchedulingDensity.HIGH
             
             row_data.append(density)
         grid_data.append(row_data)
@@ -299,31 +300,23 @@ def generate_calendar_grid_data() -> List[List[SchedulingDensity]]:
 
 
 def get_microbox_color(density: SchedulingDensity) -> Dict[str, str]:
-    """
-    Map density level to low-opacity color fills for micro-boxes.
-    
-    Args:
-        density: SchedulingDensity enum value
-        
-    Returns:
-        Dictionary with background_color and border_color for microbox
-    """
-    color_map = {
+    """Map density level to low-opacity color fills for micro-boxes."""
+    color_map: Dict[SchedulingDensity, Dict[str, str]] = {
         SchedulingDensity.LOW: {
-            "bg": "rgba(16, 185, 129, 0.05)",    # Emerald at 5% opacity (optimal)
-            "border": "rgba(16, 185, 129, 0.15)", # Emerald border (subtle)
+            "bg": "rgba(16, 185, 129, 0.05)",
+            "border": "rgba(16, 185, 129, 0.15)",
             "hover_bg": "rgba(16, 185, 129, 0.15)",
             "hover_shadow": "rgba(16, 185, 129, 0.25)",
         },
         SchedulingDensity.MEDIUM: {
-            "bg": "rgba(245, 158, 11, 0.05)",     # Amber at 5% opacity (medium)
-            "border": "rgba(245, 158, 11, 0.15)", # Amber border (subtle)
+            "bg": "rgba(245, 158, 11, 0.05)",
+            "border": "rgba(245, 158, 11, 0.15)",
             "hover_bg": "rgba(245, 158, 11, 0.15)",
             "hover_shadow": "rgba(245, 158, 11, 0.25)",
         },
         SchedulingDensity.HIGH: {
-            "bg": "rgba(75, 85, 99, 0.05)",       # Deep slate at 5% opacity (high)
-            "border": "rgba(75, 85, 99, 0.15)",   # Deep slate border (subtle)
+            "bg": "rgba(75, 85, 99, 0.05)",
+            "border": "rgba(75, 85, 99, 0.15)",
             "hover_bg": "rgba(75, 85, 99, 0.15)",
             "hover_shadow": "rgba(75, 85, 99, 0.25)",
         },
@@ -332,23 +325,20 @@ def get_microbox_color(density: SchedulingDensity) -> Dict[str, str]:
 
 
 # ============================================================================
-#    OMNISEARCH STATE MANAGEMENT
+#    STATE MANAGEMENT - OmniSearch & UI State
 # ============================================================================
 
 class OmniSearchState(rx.State):
-    """
-    Manages OmniSearch command menu state and filtering.
-    """
-    # Search input
+    """Central state management for OmniSearch overlay and app UI."""
+    
+    # Search state
     search_query: str = ""
     is_open: bool = False
-    
-    # Filtered results
     filtered_results: List[Dict[str, str]] = []
     selected_index: int = 0
     
     def toggle_search(self) -> None:
-        """Toggle search panel visibility."""
+        """Toggle search panel visibility. Defensive: validate state."""
         self.is_open = not self.is_open
         if not self.is_open:
             self.search_query = ""
@@ -357,14 +347,14 @@ class OmniSearchState(rx.State):
     def update_search(self, value: str) -> None:
         """
         Update search query and filter results dynamically.
-        
-        Args:
-            value: Search query string
+        Defensive: validate input and filter safely.
         """
-        self.search_query = value.lower()
+        if value is None:
+            return
+        
+        self.search_query = str(value).lower()
         self.selected_index = 0
         
-        # Filter results
         if not self.search_query:
             self.filtered_results = [
                 {
@@ -377,7 +367,7 @@ class OmniSearchState(rx.State):
                 for r in GLOBAL_SEARCH_INDEX
             ]
         else:
-            filtered = []
+            filtered: List[Dict[str, str]] = []
             for result in GLOBAL_SEARCH_INDEX:
                 if (self.search_query in result.title.lower() or
                     self.search_query in result.description.lower() or
@@ -394,56 +384,112 @@ class OmniSearchState(rx.State):
     def handle_key_down(self, key: str) -> None:
         """
         Handle keyboard navigation in search results.
-        
-        Args:
-            key: Key identifier
+        Defensive: validate key and bounds.
         """
-        if key == "ArrowDown":
-            self.selected_index = min(self.selected_index + 1, len(self.filtered_results) - 1)
-        elif key == "ArrowUp":
+        if key is None:
+            return
+        
+        key_str: str = str(key)
+        
+        if key_str == "ArrowDown":
+            max_idx: int = len(self.filtered_results) - 1
+            self.selected_index = min(self.selected_index + 1, max(0, max_idx))
+        elif key_str == "ArrowUp":
             self.selected_index = max(self.selected_index - 1, 0)
-        elif key == "Enter":
-            # Execute selected result
-            if self.filtered_results and self.selected_index < len(self.filtered_results):
-                result = self.filtered_results[self.selected_index]
-                self.execute_action(result["id"])
+        elif key_str == "Enter":
+            if (self.filtered_results and 
+                self.selected_index < len(self.filtered_results)):
+                result: Dict[str, str] = self.filtered_results[self.selected_index]
+                self.execute_action(result.get("id", ""))
                 self.is_open = False
-        elif key == "Escape":
+        elif key_str == "Escape":
             self.is_open = False
     
     def execute_action(self, result_id: str) -> None:
-        """
-        Execute a search result action.
+        """Execute a search result action. Defensive: validate ID."""
+        if result_id is None or not str(result_id).strip():
+            return
         
-        Args:
-            result_id: ID of result to execute
-        """
         # Placeholder: would navigate/execute based on result_id
         print(f"Executing action: {result_id}")
 
 
 # ============================================================================
-#    OMNISEARCH COMPONENT - Sleek Command Palette
+#    OMNISEARCH COMPONENT - Beautiful Keyboard Overlay
 # ============================================================================
+
+def omnisearch_result_item(
+    result: Dict[str, str],
+    index: int,
+    selected_index: int,
+) -> rx.Component:
+    """
+    Individual search result item. Defensive: validate all parameters.
+    """
+    if result is None or not isinstance(result, dict):
+        return rx.box()
+    
+    is_selected: bool = (index == selected_index)
+    
+    return rx.box(
+        rx.hstack(
+            # Icon
+            rx.box(
+                rx.text(
+                    result.get("icon", "•"),
+                    font_size="1.25rem",
+                ),
+                padding_right="1rem",
+            ),
+            
+            # Title & description
+            rx.vstack(
+                rx.text(
+                    result.get("title", ""),
+                    font_size="0.95rem",
+                    font_weight="500",
+                    color=ColorToken.TEXT_PRIMARY,
+                ),
+                rx.text(
+                    result.get("description", ""),
+                    font_size="0.8rem",
+                    color=ColorToken.TEXT_SECONDARY,
+                    font_family=FontFamily.PRIMARY,
+                ),
+                spacing="0.25rem",
+                width="100%",
+            ),
+            
+            width="100%",
+            align_items="center",
+            spacing="0.75rem",
+        ),
+        padding="0.75rem 1.5rem",
+        background_color=f"rgba(107, 90, 255, 0.08)" if is_selected else "transparent",
+        border_left=f"3px solid {ColorToken.ACCENT_PRIMARY}" if is_selected else "3px solid transparent",
+        cursor="pointer",
+        transition=TransitionProfile.GLASS_HOVER,
+        _hover={
+            "background_color": f"rgba(107, 90, 255, 0.12)",
+            "border_left_color": ColorToken.ACCENT_PRIMARY,
+        },
+        width="100%",
+    )
+
 
 def omnisearch_panel() -> rx.Component:
     """
-    Google Gemini-inspired OmniSearch command menu component.
+    Beautiful OmniSearch keyboard overlay with frosted glass and premium blur.
     
     Features:
-    - Keyboard activation (Cmd+K / Ctrl+K)
-    - Translucent frosted background overlay
-    - Pulsing violet text cursor
-    - Dynamic result filtering
-    - Categorized results (3 sections)
-    - Arrow key navigation
-    - Peak-tier glass morphism with ambient light
-    
-    Returns:
-        Reflex component with search overlay
+    - Absolute positioning over viewport
+    - Frosted glass backdrop with premium blur (backdrop_filter="blur(30px)")
+    - Pulsing accent-colored cursor in input
+    - High-contrast, widely tracked micro-labels
+    - Defensive layout with bounds verification
     """
     return rx.box(
-        # Backdrop overlay (translucent frosted background)
+        # Backdrop overlay - frosted glass with premium blur
         rx.box(
             width="100vw",
             height="100vh",
@@ -462,7 +508,7 @@ def omnisearch_panel() -> rx.Component:
                 # Search input header
                 rx.box(
                     rx.hstack(
-                        # Search icon
+                        # Search icon with accent color
                         rx.text(
                             "🔍",
                             font_size="1.25rem",
@@ -487,6 +533,7 @@ def omnisearch_panel() -> rx.Component:
                             },
                             _focus={
                                 "outline": "none",
+                                "caret_color": ColorToken.ACCENT_PRIMARY,
                             },
                             auto_focus=True,
                         ),
@@ -520,11 +567,17 @@ def omnisearch_panel() -> rx.Component:
                                     rx.vstack(
                                         *[
                                             omnisearch_result_item(
-                                                result,
+                                                {
+                                                    "id": r.id,
+                                                    "title": r.title,
+                                                    "description": r.description,
+                                                    "category": r.category,
+                                                    "icon": r.icon,
+                                                },
                                                 idx,
                                                 OmniSearchState.selected_index,
                                             )
-                                            for idx, result in enumerate(STUDENT_TRACKS_INDEX)
+                                            for idx, r in enumerate(STUDENT_TRACKS_INDEX)
                                         ],
                                         width="100%",
                                     ),
@@ -545,11 +598,17 @@ def omnisearch_panel() -> rx.Component:
                                     rx.vstack(
                                         *[
                                             omnisearch_result_item(
-                                                result,
+                                                {
+                                                    "id": r.id,
+                                                    "title": r.title,
+                                                    "description": r.description,
+                                                    "category": r.category,
+                                                    "icon": r.icon,
+                                                },
                                                 idx + 4,
                                                 OmniSearchState.selected_index,
                                             )
-                                            for idx, result in enumerate(ROOM_OPTIMIZATION_INDEX)
+                                            for idx, r in enumerate(ROOM_OPTIMIZATION_INDEX)
                                         ],
                                         width="100%",
                                     ),
@@ -570,11 +629,17 @@ def omnisearch_panel() -> rx.Component:
                                     rx.vstack(
                                         *[
                                             omnisearch_result_item(
-                                                result,
+                                                {
+                                                    "id": r.id,
+                                                    "title": r.title,
+                                                    "description": r.description,
+                                                    "category": r.category,
+                                                    "icon": r.icon,
+                                                },
                                                 idx + 8,
                                                 OmniSearchState.selected_index,
                                             )
-                                            for idx, result in enumerate(SYSTEM_ACTIONS_INDEX)
+                                            for idx, r in enumerate(SYSTEM_ACTIONS_INDEX)
                                         ],
                                         width="100%",
                                     ),
@@ -620,7 +685,7 @@ def omnisearch_panel() -> rx.Component:
                     width="100%",
                 ),
                 
-                # Footer hint
+                # Footer hint with high-contrast micro-labels
                 rx.box(
                     rx.hstack(
                         rx.text(
@@ -628,12 +693,14 @@ def omnisearch_panel() -> rx.Component:
                             font_size="0.75rem",
                             color=ColorToken.TEXT_SECONDARY,
                             font_family=FontFamily.MONO,
+                            letter_spacing="0.05em",
                         ),
                         rx.text(
                             "Navigate",
                             font_size="0.75rem",
                             color=ColorToken.TEXT_SECONDARY,
                             font_family=FontFamily.PRIMARY,
+                            letter_spacing="0.05em",
                         ),
                         rx.spacer(),
                         rx.text(
@@ -641,12 +708,14 @@ def omnisearch_panel() -> rx.Component:
                             font_size="0.75rem",
                             color=ColorToken.TEXT_SECONDARY,
                             font_family=FontFamily.MONO,
+                            letter_spacing="0.05em",
                         ),
                         rx.text(
                             "Select",
                             font_size="0.75rem",
                             color=ColorToken.TEXT_SECONDARY,
                             font_family=FontFamily.PRIMARY,
+                            letter_spacing="0.05em",
                         ),
                         rx.spacer(),
                         rx.text(
@@ -654,12 +723,14 @@ def omnisearch_panel() -> rx.Component:
                             font_size="0.75rem",
                             color=ColorToken.TEXT_SECONDARY,
                             font_family=FontFamily.MONO,
+                            letter_spacing="0.05em",
                         ),
                         rx.text(
                             "Close",
                             font_size="0.75rem",
                             color=ColorToken.TEXT_SECONDARY,
                             font_family=FontFamily.PRIMARY,
+                            letter_spacing="0.05em",
                         ),
                         width="100%",
                         padding="1rem 1.5rem",
@@ -685,100 +756,16 @@ def omnisearch_panel() -> rx.Component:
     )
 
 
-def omnisearch_result_item(
-    result: Dict[str, str],
-    index: int,
-    selected_index: int,
-) -> rx.Component:
-    """
-    Individual search result item in the command menu with glass morphism.
-    
-    Args:
-        result: Result data dictionary
-        index: Result index
-        selected_index: Currently selected index
-        
-    Returns:
-        Reflex component
-    """
-    is_selected = index == selected_index
-    
-    return rx.box(
-        rx.hstack(
-            # Icon
-            rx.box(
-                rx.text(
-                    result["icon"],
-                    font_size="1.25rem",
-                ),
-                padding_right="1rem",
-            ),
-            
-            # Title & description
-            rx.vstack(
-                rx.text(
-                    result["title"],
-                    font_size="0.95rem",
-                    font_weight="500",
-                    color=ColorToken.TEXT_PRIMARY,
-                ),
-                rx.text(
-                    result["description"],
-                    font_size="0.8rem",
-                    color=ColorToken.TEXT_SECONDARY,
-                    font_family=FontFamily.PRIMARY,
-                ),
-                spacing="0.25rem",
-                width="100%",
-            ),
-            
-            width="100%",
-            align_items="center",
-            spacing="0.75rem",
-        ),
-        padding="0.75rem 1.5rem",
-        background_color=f"rgba(107, 90, 255, 0.08)" if is_selected else "transparent",
-        border_left=f"3px solid {ColorToken.ACCENT_PRIMARY}" if is_selected else "3px solid transparent",
-        cursor="pointer",
-        transition=TransitionProfile.GLASS_HOVER,
-        _hover={
-            "background_color": f"rgba(107, 90, 255, 0.12)",
-            "border_left_color": ColorToken.ACCENT_PRIMARY,
-        },
-        width="100%",
-    )
-
-
 # ============================================================================
 #    CALENDAR GRID COMPONENT - High-Fidelity Contribution Matrix
 # ============================================================================
 
 def calendar_attendance_grid() -> rx.Component:
-    """
-    High-fidelity contribution grid heatmap with 6×24 micro-box matrix.
+    """High-fidelity contribution grid heatmap with 6×24 micro-box matrix."""
     
-    Features:
-    - 6 horizontal rows (District/Track blocks)
-    - 24 columns (academic calendar blocks)
-    - Crisp 12px × 12px micro-boxes with 2px border-radius
-    - Low-opacity color fills mapped to scheduling density
-    - Row labels: "Dist 1" through "Dist 6" (left margin)
-    - Column headers: "Mon", "Tue", "Wed" (repeating pattern)
-    - Professional legibility with clean typography
-    - Glass morphism container with ambient lighting
-    
-    Returns:
-        Reflex component with polished contribution grid matrix
-    """
-    
-    # Generate calendar data
-    grid_data = generate_calendar_grid_data()
-    
-    # District/classroom row labels
-    district_labels = [f"Dist {i+1}" for i in range(6)]
-    
-    # Day of week cycle (Mon, Tue, Wed repeated 8 times for 24 columns)
-    day_cycle = ["Mon", "Tue", "Wed"]
+    grid_data: List[List[SchedulingDensity]] = generate_calendar_grid_data()
+    district_labels: List[str] = [f"Dist {i+1}" for i in range(6)]
+    day_cycle: List[str] = ["Mon", "Tue", "Wed"]
     
     return rx.box(
         rx.vstack(
@@ -798,12 +785,10 @@ def calendar_attendance_grid() -> rx.Component:
             # Calendar grid container with glass morphism
             rx.box(
                 rx.vstack(
-                    # Column header row with day labels
+                    # Column header row
                     rx.hstack(
-                        # Empty corner cell for row labels spacing
                         rx.box(width="3.25rem", height="2rem"),
                         
-                        # Day of week headers (Mon, Tue, Wed repeated)
                         rx.hstack(
                             *[
                                 rx.box(
@@ -815,7 +800,7 @@ def calendar_attendance_grid() -> rx.Component:
                                         text_align="center",
                                         width="100%",
                                     ),
-                                    width="1.75rem",  # 12px box + 8px padding/spacing
+                                    width="1.75rem",
                                     height="2rem",
                                     display="flex",
                                     align_items="center",
@@ -833,11 +818,10 @@ def calendar_attendance_grid() -> rx.Component:
                         align_items="flex-start",
                     ),
                     
-                    # Data rows (6 districts/tracks) with micro-box grid
+                    # Data rows
                     rx.vstack(
                         *[
                             rx.hstack(
-                                # Row label (District) - left column margin
                                 rx.box(
                                     rx.text(
                                         district_labels[row_idx],
@@ -855,7 +839,6 @@ def calendar_attendance_grid() -> rx.Component:
                                     padding_right="0.5rem",
                                 ),
                                 
-                                # Grid cells - micro-boxes for this row (24 columns)
                                 rx.hstack(
                                     *[
                                         rx.box(
@@ -913,7 +896,6 @@ def calendar_attendance_grid() -> rx.Component:
                     text_transform="uppercase",
                 ),
                 rx.hstack(
-                    # Low Density (Emerald)
                     rx.hstack(
                         rx.box(
                             width="12px",
@@ -931,7 +913,6 @@ def calendar_attendance_grid() -> rx.Component:
                         spacing="0.5rem",
                         align_items="center",
                     ),
-                    # Medium Density (Amber)
                     rx.hstack(
                         rx.box(
                             width="12px",
@@ -949,7 +930,6 @@ def calendar_attendance_grid() -> rx.Component:
                         spacing="0.5rem",
                         align_items="center",
                     ),
-                    # High Density (Deep Slate)
                     rx.hstack(
                         rx.box(
                             width="12px",
@@ -984,24 +964,361 @@ def calendar_attendance_grid() -> rx.Component:
 
 
 # ============================================================================
-#    CONTAINER EXPORT
+#    STUDENT RANKING PODIUMS COMPONENT
 # ============================================================================
 
-def get_omnisearch_component() -> rx.Component:
-    """
-    Export OmniSearch command menu for integration into root layout.
+def glowing_avatar_ring(initials: str, rank: int) -> rx.Component:
+    """Perfect glowing circular thumbnail ring for student avatar."""
     
-    Returns:
-        Reflex component with search overlay
-    """
+    glow_colors: Dict[int, str] = {
+        1: ColorToken.GLOW_VIOLET,
+        2: "rgba(16, 185, 129, 0.15)",
+        3: "rgba(16, 185, 129, 0.1)",
+    }
+    
+    border_colors: Dict[int, str] = {
+        1: "rgba(139, 92, 246, 0.4)",
+        2: "rgba(16, 185, 129, 0.3)",
+        3: "rgba(16, 185, 129, 0.2)",
+    }
+    
+    size: str = "5rem" if rank == 1 else "4rem"
+    font_size: str = "1.25rem" if rank == 1 else "1rem"
+    
+    return rx.box(
+        rx.text(
+            initials,
+            font_size=font_size,
+            font_weight="700",
+            color=ColorToken.TEXT_PRIMARY,
+            text_align="center",
+        ),
+        width=size,
+        height=size,
+        border_radius="50%",
+        background_color=f"rgba(107, 90, 255, 0.1)",
+        border=f"2px solid {border_colors.get(rank, border_colors[3])}",
+        display="flex",
+        align_items="center",
+        justify_content="center",
+        box_shadow=f"0 0 20px {glow_colors.get(rank, glow_colors[3])}",
+        transition=TransitionProfile.GLASS_HOVER,
+        _hover={
+            "transform": "scale(1.05)",
+            "box_shadow": f"0 0 30px {glow_colors.get(rank, glow_colors[3])}",
+        },
+    )
+
+
+def ranking_podium_card(student: StudentRanking) -> rx.Component:
+    """Floating structural podium deck for student ranking. Defensive: validate input."""
+    
+    if student is None:
+        return rx.box()
+    
+    is_first: bool = student.rank == 1
+    
+    height_map: Dict[int, str] = {
+        1: "24rem",
+        2: "20rem",
+        3: "20rem",
+    }
+    
+    border_color_map: Dict[int, str] = {
+        1: f"2px solid {ColorToken.GLOW_EMERALD}",
+        2: f"1px solid {ColorToken.BORDER_LASER_SPEC}",
+        3: f"1px solid {ColorToken.BORDER_LASER_SPEC}",
+    }
+    
+    shadow_map: Dict[int, str] = {
+        1: f"0 0 30px {ColorToken.GLOW_EMERALD}",
+        2: "0 10px 40px -10px rgba(139, 92, 246, 0.12)",
+        3: "0 10px 40px -10px rgba(139, 92, 246, 0.12)",
+    }
+    
+    return rx.box(
+        rx.vstack(
+            rx.box(
+                rx.text(
+                    f"#{student.rank}",
+                    font_size="0.85rem" if is_first else "0.75rem",
+                    font_weight="700",
+                    color=ColorToken.TEXT_PRIMARY,
+                    letter_spacing="0.05em",
+                ),
+                padding="0.5rem 1rem" if is_first else "0.375rem 0.75rem",
+                background_color="rgba(107, 90, 255, 0.2)" if is_first else "rgba(107, 90, 255, 0.1)",
+                border=f"1px solid {ColorToken.ACCENT_VIOLET}",
+                border_radius="0.5rem",
+            ),
+            
+            glowing_avatar_ring(student.initials, student.rank),
+            
+            rx.text(
+                student.name,
+                font_size="1rem" if is_first else "0.9rem",
+                font_weight="700",
+                color=ColorToken.TEXT_PRIMARY,
+                text_align="center",
+            ),
+            
+            rx.text(
+                student.grade,
+                font_size="0.75rem",
+                color=ColorToken.TEXT_SECONDARY,
+                text_align="center",
+            ),
+            
+            rx.text(
+                f"{student.percentage:.2f}%",
+                font_size="1.75rem" if is_first else "1.5rem",
+                font_weight="900",
+                background_image="linear-gradient(135deg, #6B5AFF, #00D084)",
+                background_clip="text",
+                color="transparent",
+                font_family=FontFamily.MONO,
+                letter_spacing="0.05em",
+                text_align="center",
+            ),
+            
+            spacing="0.75rem" if is_first else "0.5rem",
+            align_items="center",
+            justify_content="space-between",
+            width="100%",
+            height="100%",
+            padding="1.5rem" if is_first else "1.25rem",
+        ),
+        width="100%",
+        height=height_map.get(student.rank, "20rem"),
+        background_color=ColorToken.GLASS_SURFACE,
+        border=border_color_map.get(student.rank, border_color_map[3]),
+        border_radius="1.25rem",
+        box_shadow=shadow_map.get(student.rank, shadow_map[3]),
+        transition=TransitionProfile.GLASS_HOVER,
+        _hover={
+            "transform": "translateY(-4px)" if is_first else "translateY(-2px)",
+            "box_shadow": f"0 0 40px {ColorToken.GLOW_VIOLET}" if is_first else shadow_map.get(student.rank, shadow_map[3]),
+        },
+    )
+
+
+def student_ranking_podiums() -> rx.Component:
+    """3-column ranking podium layout with 1st place prominently centered."""
+    
+    sorted_students: List[StudentRanking] = sorted(STUDENT_RANKINGS, key=lambda x: x.rank)
+    display_order: List[StudentRanking] = [sorted_students[1], sorted_students[0], sorted_students[2]]
+    
+    return rx.box(
+        rx.vstack(
+            rx.text(
+                "Top Performers",
+                font_size="1.5rem",
+                font_weight="700",
+                color=ColorToken.TEXT_PRIMARY,
+                letter_spacing="0.02em",
+            ),
+            
+            rx.hstack(
+                *[
+                    ranking_podium_card(student)
+                    for student in display_order
+                ],
+                spacing="2rem",
+                width="100%",
+                align_items="flex-end",
+            ),
+            
+            spacing="2rem",
+            width="100%",
+        ),
+        padding="2rem",
+        width="100%",
+    )
+
+
+# ============================================================================
+#    SIDEBAR NAVIGATION COMPONENT
+# ============================================================================
+
+def sidebar_nav_button(icon: str, label: str, is_active: bool = False) -> rx.Component:
+    """Minimalist sidebar navigation button with subtle hover effects."""
+    
+    return rx.button(
+        rx.vstack(
+            rx.text(
+                icon,
+                font_size="1.5rem",
+            ),
+            rx.text(
+                label,
+                font_size="0.65rem",
+                font_weight="600",
+                letter_spacing="0.05em",
+                color=ColorToken.TEXT_PRIMARY if is_active else ColorToken.TEXT_SECONDARY,
+                transition="all 0.3s ease",
+            ),
+            spacing="0.25rem",
+            align_items="center",
+            justify_content="center",
+        ),
+        background_color="transparent",
+        border="none",
+        padding="0.75rem 0.5rem",
+        width="100%",
+        cursor="pointer",
+        transition=TransitionProfile.GLASS_HOVER,
+        _hover={
+            "color": ColorToken.ACCENT_VIOLET,
+            "transform": "scale(1.02)",
+        },
+    )
+
+
+def sidebar_navigation() -> rx.Component:
+    """Minimalist left navigation sidebar with tight spacing."""
+    
+    nav_items: List[Tuple[str, str]] = [
+        ("📊", "Dashboard"),
+        ("📚", "Courses"),
+        ("👥", "Students"),
+        ("🎛️", "Scheduler"),
+        ("⚙️", "Settings"),
+    ]
+    
+    return rx.box(
+        rx.vstack(
+            # Brand/Logo area
+            rx.box(
+                rx.text(
+                    "🎓",
+                    font_size="1.75rem",
+                    text_align="center",
+                ),
+                width="100%",
+                padding="1rem 0.5rem",
+                border_bottom=f"1px solid {ColorToken.BORDER_LASER_SPEC}",
+            ),
+            
+            # Navigation buttons
+            rx.vstack(
+                *[
+                    sidebar_nav_button(icon, label, is_active=(i == 0))
+                    for i, (icon, label) in enumerate(nav_items)
+                ],
+                spacing="0.5rem",
+                padding="1rem 0.5rem",
+                width="100%",
+            ),
+            
+            # Spacer
+            rx.spacer(),
+            
+            # Bottom profile area
+            rx.box(
+                rx.vstack(
+                    rx.box(
+                        rx.text(
+                            "👤",
+                            font_size="1.25rem",
+                            text_align="center",
+                        ),
+                        width="100%",
+                        padding="0.5rem",
+                    ),
+                    spacing="0.25rem",
+                ),
+                width="100%",
+                padding="1rem 0.5rem",
+                border_top=f"1px solid {ColorToken.BORDER_LASER_SPEC}",
+            ),
+            
+            spacing="0",
+            width="100%",
+            height="100vh",
+        ),
+        width="4.5rem",
+        background_color=ColorToken.SIDEBAR_DARK,
+        border_right=f"1px solid {ColorToken.BORDER_LASER_SPEC}",
+        padding="0",
+    )
+
+
+# ============================================================================
+#    MAIN CONTENT CANVAS
+# ============================================================================
+
+def canvas_content_board() -> rx.Component:
+    """Massive right content board with curved left border."""
+    
+    return rx.box(
+        rx.vstack(
+            student_ranking_podiums(),
+            calendar_attendance_grid(),
+            
+            spacing="2rem",
+            width="100%",
+            padding="2rem",
+        ),
+        flex="1",
+        background_color=ColorToken.BACKGROUND_OBSIDIAN,
+        border_radius="2.5rem 0 0 2.5rem",
+        border_left=f"1px solid {ColorToken.BORDER_LASER_SPEC}",
+        overflow_y="auto",
+        overflow_x="hidden",
+    )
+
+
+# ============================================================================
+#    MAIN INDEX LAYOUT
+# ============================================================================
+
+def index_layout() -> rx.Component:
+    """Complete peak layout asymmetry viewport assembly with all components."""
+    
+    return rx.box(
+        rx.hstack(
+            sidebar_navigation(),
+            canvas_content_board(),
+            
+            spacing="0",
+            width="100%",
+            height="100vh",
+        ),
+        background_color=ColorToken.BACKGROUND_OBSIDIAN,
+        width="100%",
+        height="100%",
+    )
+
+
+# ============================================================================
+#    EXPORT FUNCTIONS
+# ============================================================================
+
+def get_omnisearch_panel() -> rx.Component:
+    """Export OmniSearch overlay for integration."""
     return omnisearch_panel()
 
 
-def get_calendar_attendance_component() -> rx.Component:
-    """
-    Export calendar attendance grid for integration into dashboard.
-    
-    Returns:
-        Reflex component ready for embedding
-    """
+def get_calendar_grid() -> rx.Component:
+    """Export calendar grid component."""
     return calendar_attendance_grid()
+
+
+def get_ranking_podiums() -> rx.Component:
+    """Export ranking podiums component."""
+    return student_ranking_podiums()
+
+
+def get_index_layout() -> rx.Component:
+    """Export main index layout."""
+    return index_layout()
+
+
+def get_sidebar() -> rx.Component:
+    """Export sidebar navigation."""
+    return sidebar_navigation()
+
+
+def get_canvas_board() -> rx.Component:
+    """Export canvas content board."""
+    return canvas_content_board()
