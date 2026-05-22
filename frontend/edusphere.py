@@ -356,7 +356,7 @@ def omnisearch_panel() -> rx.Component:
             top="0",
             left="0",
             background_color="rgba(8, 10, 16, 0.7)",
-            backdrop_blur="xl",
+            backdrop_filter="blur(12px)",
             z_index="1000",
             on_click=lambda: OmniSearchState.toggle_search(),
         ),
@@ -428,7 +428,6 @@ def omnisearch_panel() -> rx.Component:
                                                 result,
                                                 idx,
                                                 OmniSearchState.selected_index,
-                                                idx < 4,
                                             )
                                             for idx, result in enumerate(STUDENT_TRACKS_INDEX)
                                         ],
@@ -454,7 +453,6 @@ def omnisearch_panel() -> rx.Component:
                                                 result,
                                                 idx + 4,
                                                 OmniSearchState.selected_index,
-                                                4 <= idx + 4 < 8,
                                             )
                                             for idx, result in enumerate(ROOM_OPTIMIZATION_INDEX)
                                         ],
@@ -480,7 +478,6 @@ def omnisearch_panel() -> rx.Component:
                                                 result,
                                                 idx + 8,
                                                 OmniSearchState.selected_index,
-                                                idx + 8 < 13,
                                             )
                                             for idx, result in enumerate(SYSTEM_ACTIONS_INDEX)
                                         ],
@@ -501,7 +498,6 @@ def omnisearch_panel() -> rx.Component:
                                             result,
                                             idx,
                                             OmniSearchState.selected_index,
-                                            True,
                                         )
                                         for idx, result in enumerate(OmniSearchState.filtered_results)
                                     ],
@@ -601,7 +597,6 @@ def omnisearch_result_item(
     result: Dict[str, str],
     index: int,
     selected_index: int,
-    show_item: bool,
 ) -> rx.Component:
     """
     Individual search result item in the command menu.
@@ -610,7 +605,6 @@ def omnisearch_result_item(
         result: Result data dictionary
         index: Result index
         selected_index: Currently selected index
-        show_item: Whether to show this item
         
     Returns:
         Reflex component
@@ -634,7 +628,7 @@ def omnisearch_result_item(
                     result["title"],
                     font_size="0.95rem",
                     font_weight="500",
-                    color=ColorToken.TEXT_PRIMARY if is_selected else ColorToken.TEXT_PRIMARY,
+                    color=ColorToken.TEXT_PRIMARY,
                 ),
                 rx.text(
                     result["description"],
@@ -651,12 +645,12 @@ def omnisearch_result_item(
             spacing="0.75rem",
         ),
         padding="0.75rem 1.5rem",
-        background_color=f"rgba({ColorToken.ACCENT_PRIMARY}, 0.15)" if is_selected else "transparent",
+        background_color=f"rgba(107, 90, 255, 0.15)" if is_selected else "transparent",
         border_left=f"3px solid {ColorToken.ACCENT_PRIMARY}" if is_selected else "3px solid transparent",
         cursor="pointer",
         transition="all 0.15s ease",
         _hover={
-            "background_color": f"rgba({ColorToken.ACCENT_PRIMARY}, 0.08)",
+            "background_color": f"rgba(107, 90, 255, 0.08)",
         },
         width="100%",
     )
