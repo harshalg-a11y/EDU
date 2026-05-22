@@ -1,7 +1,7 @@
 """
 EduSphere Central - Calendar Attendance Matrix & OmniSearch Command Menu
 Pure Python Reflex frontend with pristine calendar grid layout and universal command palette.
-6 classroom rows × 24 academic calendar blocks with dynamic color-coding.
+High-fidelity contribution grid heatmap with 6×24 micro-box matrix.
 Peak-tier cinematic Gemini aesthetic with glass morphism surfaces and ambient light projections.
 """
 
@@ -34,6 +34,7 @@ class ColorToken(str, PyEnum):
     # Typography
     TEXT_PRIMARY = "#FFFFFF"                 # Pure white text
     TEXT_SECONDARY = "#A0A0A0"               # Muted gray
+    TEXT_MICRO = "#808080"                   # Micro-text gray
     
     # Accent colors (with shadow mappings)
     ACCENT_PRIMARY = "#6B5AFF"               # Violet accent
@@ -266,12 +267,12 @@ SYSTEM_ACTIONS_INDEX = [
 GLOBAL_SEARCH_INDEX = STUDENT_TRACKS_INDEX + ROOM_OPTIMIZATION_INDEX + SYSTEM_ACTIONS_INDEX
 
 
-def generate_calendar_grid_data() -> List[List[Tuple[str, SchedulingDensity]]]:
+def generate_calendar_grid_data() -> List[List[SchedulingDensity]]:
     """
     Generate 6×24 calendar matrix with mock scheduling density data.
     
     Returns:
-        6 rows × 24 columns matrix with (block_label, density) tuples
+        6 rows × 24 columns matrix with SchedulingDensity values
     """
     import random
     
@@ -282,12 +283,6 @@ def generate_calendar_grid_data() -> List[List[Tuple[str, SchedulingDensity]]]:
     for row in range(rows_count):
         row_data = []
         for col in range(cols_count):
-            # Generate block label (Week1-Mon, Week2-Tue, etc.)
-            week_num = (col // 3) + 1
-            days = ["Mon", "Tue", "Wed"]
-            day_label = days[col % 3]
-            block_label = f"W{week_num}-{day_label}"
-            
             # Assign random density with bias toward medium
             rand = random.random()
             if rand < 0.25:
@@ -297,35 +292,41 @@ def generate_calendar_grid_data() -> List[List[Tuple[str, SchedulingDensity]]]:
             else:
                 density = SchedulingDensity.HIGH
             
-            row_data.append((block_label, density))
+            row_data.append(density)
         grid_data.append(row_data)
     
     return grid_data
 
 
-def get_density_color(density: SchedulingDensity) -> Tuple[str, str]:
+def get_microbox_color(density: SchedulingDensity) -> Dict[str, str]:
     """
-    Map density level to color and opacity.
+    Map density level to low-opacity color fills for micro-boxes.
     
     Args:
         density: SchedulingDensity enum value
         
     Returns:
-        Tuple of (background_color, border_color)
+        Dictionary with background_color and border_color for microbox
     """
     color_map = {
-        SchedulingDensity.LOW: (
-            "rgba(16, 185, 129, 0.15)",    # Emerald with 15% opacity
-            "rgba(16, 185, 129, 0.4)"      # Emerald border
-        ),
-        SchedulingDensity.MEDIUM: (
-            "rgba(245, 158, 11, 0.15)",    # Amber with 15% opacity
-            "rgba(245, 158, 11, 0.4)"      # Amber border
-        ),
-        SchedulingDensity.HIGH: (
-            "rgba(75, 85, 99, 0.15)",      # Deep slate with 15% opacity
-            "rgba(75, 85, 99, 0.4)"        # Deep slate border
-        ),
+        SchedulingDensity.LOW: {
+            "bg": "rgba(16, 185, 129, 0.05)",    # Emerald at 5% opacity (optimal)
+            "border": "rgba(16, 185, 129, 0.15)", # Emerald border (subtle)
+            "hover_bg": "rgba(16, 185, 129, 0.15)",
+            "hover_shadow": "rgba(16, 185, 129, 0.25)",
+        },
+        SchedulingDensity.MEDIUM: {
+            "bg": "rgba(245, 158, 11, 0.05)",     # Amber at 5% opacity (medium)
+            "border": "rgba(245, 158, 11, 0.15)", # Amber border (subtle)
+            "hover_bg": "rgba(245, 158, 11, 0.15)",
+            "hover_shadow": "rgba(245, 158, 11, 0.25)",
+        },
+        SchedulingDensity.HIGH: {
+            "bg": "rgba(75, 85, 99, 0.05)",       # Deep slate at 5% opacity (high)
+            "border": "rgba(75, 85, 99, 0.15)",   # Deep slate border (subtle)
+            "hover_bg": "rgba(75, 85, 99, 0.15)",
+            "hover_shadow": "rgba(75, 85, 99, 0.25)",
+        },
     }
     return color_map.get(density, color_map[SchedulingDensity.MEDIUM])
 
@@ -749,24 +750,25 @@ def omnisearch_result_item(
 
 
 # ============================================================================
-#    CALENDAR GRID COMPONENT - Pristine Matrix Layout
+#    CALENDAR GRID COMPONENT - High-Fidelity Contribution Matrix
 # ============================================================================
 
 def calendar_attendance_grid() -> rx.Component:
     """
-    Pristine calendar attendance matrix grid component with glass morphism.
+    High-fidelity contribution grid heatmap with 6×24 micro-box matrix.
     
     Features:
-    - 6 classroom rows (Dist 1-6) × 24 academic calendar blocks (Week×Day)
-    - Dynamic color-coding by scheduling traffic density
-    - Row labels on left (Dist 1, Dist 2, etc.)
-    - Column headers with Mon/Tue/Wed pattern
-    - High-contrast micro-boxes with sharp rendering
-    - Fixed height without overflow in card container
-    - Peak-tier cinematic glass surfaces with ambient light
+    - 6 horizontal rows (District/Track blocks)
+    - 24 columns (academic calendar blocks)
+    - Crisp 12px × 12px micro-boxes with 2px border-radius
+    - Low-opacity color fills mapped to scheduling density
+    - Row labels: "Dist 1" through "Dist 6" (left margin)
+    - Column headers: "Mon", "Tue", "Wed" (repeating pattern)
+    - Professional legibility with clean typography
+    - Glass morphism container with ambient lighting
     
     Returns:
-        Reflex component with fully populated grid
+        Reflex component with polished contribution grid matrix
     """
     
     # Generate calendar data
@@ -775,6 +777,7 @@ def calendar_attendance_grid() -> rx.Component:
     # District/classroom row labels
     district_labels = [f"Dist {i+1}" for i in range(6)]
     
+    # Day of week cycle (Mon, Tue, Wed repeated 8 times for 24 columns)
     day_cycle = ["Mon", "Tue", "Wed"]
     
     return rx.box(
@@ -782,7 +785,7 @@ def calendar_attendance_grid() -> rx.Component:
             # Title section
             rx.box(
                 rx.text(
-                    "Calendar Attendance",
+                    "Calendar Attendance Heatmap",
                     font_size="1rem",
                     font_weight="600",
                     color=ColorToken.TEXT_PRIMARY,
@@ -794,12 +797,11 @@ def calendar_attendance_grid() -> rx.Component:
             
             # Calendar grid container with glass morphism
             rx.box(
-                # Main grid wrapper
                 rx.vstack(
                     # Column header row with day labels
                     rx.hstack(
-                        # Empty corner cell for row labels
-                        rx.box(width="3.5rem", height="1.75rem"),
+                        # Empty corner cell for row labels spacing
+                        rx.box(width="3.25rem", height="2rem"),
                         
                         # Day of week headers (Mon, Tue, Wed repeated)
                         rx.hstack(
@@ -813,83 +815,68 @@ def calendar_attendance_grid() -> rx.Component:
                                         text_align="center",
                                         width="100%",
                                     ),
-                                    width="2.5rem",
-                                    height="1.75rem",
+                                    width="1.75rem",  # 12px box + 8px padding/spacing
+                                    height="2rem",
                                     display="flex",
                                     align_items="center",
                                     justify_content="center",
                                 )
                                 for col in range(24)
                             ],
-                            spacing="0.25rem",
+                            spacing="0.5rem",
                             width="100%",
+                            align_items="center",
                         ),
                         
                         spacing="0.5rem",
                         width="100%",
-                        align_items="center",
+                        align_items="flex-start",
                     ),
                     
-                    # Data rows (6 classrooms)
+                    # Data rows (6 districts/tracks) with micro-box grid
                     rx.vstack(
                         *[
                             rx.hstack(
-                                # Row label (District)
+                                # Row label (District) - left column margin
                                 rx.box(
                                     rx.text(
                                         district_labels[row_idx],
-                                        font_size="0.7rem",
+                                        font_size="0.65rem",
                                         font_weight="600",
                                         color=ColorToken.TEXT_PRIMARY,
-                                        text_align="center",
+                                        text_align="right",
                                         width="100%",
                                     ),
-                                    width="3.5rem",
+                                    width="3.25rem",
                                     height="2rem",
                                     display="flex",
                                     align_items="center",
-                                    justify_content="center",
-                                    border_right=f"1px solid {ColorToken.BORDER_LASER_SPEC}",
+                                    justify_content="flex-end",
                                     padding_right="0.5rem",
                                 ),
                                 
-                                # Grid cells for this row (24 columns)
+                                # Grid cells - micro-boxes for this row (24 columns)
                                 rx.hstack(
                                     *[
                                         rx.box(
-                                            rx.vstack(
-                                                rx.text(
-                                                    grid_data[row_idx][col_idx][0],
-                                                    font_size="0.55rem",
-                                                    font_weight="500",
-                                                    color=ColorToken.TEXT_PRIMARY,
-                                                    text_align="center",
-                                                    width="100%",
-                                                    no_of_lines=1,
-                                                ),
-                                                spacing="0",
-                                            ),
-                                            width="2.5rem",
-                                            height="2rem",
-                                            background_color=get_density_color(grid_data[row_idx][col_idx][1])[0],
-                                            border=f"1px solid {get_density_color(grid_data[row_idx][col_idx][1])[1]}",
-                                            border_radius="0.375rem",
-                                            display="flex",
-                                            align_items="center",
-                                            justify_content="center",
-                                            padding="0.25rem",
+                                            width="12px",
+                                            height="12px",
+                                            background_color=get_microbox_color(grid_data[row_idx][col_idx])["bg"],
+                                            border=f"1px solid {get_microbox_color(grid_data[row_idx][col_idx])['border']}",
+                                            border_radius="2px",
                                             transition=TransitionProfile.GLASS_HOVER,
-                                            _hover={
-                                                "background_color": get_density_color(grid_data[row_idx][col_idx][1])[1],
-                                                "box_shadow": f"0 2px 8px {get_density_color(grid_data[row_idx][col_idx][1])[1]}",
-                                                "transform": "scale(1.0001) translateY(-1px)",
-                                            },
                                             cursor="pointer",
+                                            _hover={
+                                                "background_color": get_microbox_color(grid_data[row_idx][col_idx])["hover_bg"],
+                                                "box_shadow": f"0 2px 6px {get_microbox_color(grid_data[row_idx][col_idx])['hover_shadow']}",
+                                                "transform": "scale(1.25)",
+                                            },
                                         )
                                         for col_idx in range(24)
                                     ],
-                                    spacing="0.25rem",
+                                    spacing="0.5rem",
                                     width="100%",
+                                    align_items="center",
                                     wrap="nowrap",
                                 ),
                                 
@@ -899,72 +886,92 @@ def calendar_attendance_grid() -> rx.Component:
                             )
                             for row_idx in range(6)
                         ],
-                        spacing="0.5rem",
+                        spacing="0.75rem",
                         width="100%",
                     ),
                     
-                    spacing="0.5rem",
+                    spacing="0.75rem",
                     width="100%",
                 ),
                 
-                padding="1.25rem",
+                padding="1.5rem",
                 **get_glass_panel_style(shadow_map=ShadowMapping.EMERALD),
                 overflow_x="auto",
-                overflow_y="hidden",
+                overflow_y="auto",
                 width="100%",
-                max_height="16rem",  # Fixed height to prevent overflow
+                max_height="20rem",
             ),
             
-            # Legend
-            rx.hstack(
-                rx.hstack(
-                    rx.box(
-                        width="0.75rem",
-                        height="0.75rem",
-                        background_color="rgba(16, 185, 129, 0.4)",
-                        border_radius="0.25rem",
-                    ),
-                    rx.text(
-                        "Low Density",
-                        font_size="0.7rem",
-                        color=ColorToken.TEXT_SECONDARY,
-                        font_family=FontFamily.PRIMARY,
-                    ),
-                    spacing="0.5rem",
+            # Legend with density explanations
+            rx.vstack(
+                rx.text(
+                    "Density Legend",
+                    font_size="0.75rem",
+                    font_weight="600",
+                    color=ColorToken.TEXT_SECONDARY,
+                    letter_spacing="0.1em",
+                    text_transform="uppercase",
                 ),
                 rx.hstack(
-                    rx.box(
-                        width="0.75rem",
-                        height="0.75rem",
-                        background_color="rgba(245, 158, 11, 0.4)",
-                        border_radius="0.25rem",
+                    # Low Density (Emerald)
+                    rx.hstack(
+                        rx.box(
+                            width="12px",
+                            height="12px",
+                            background_color="rgba(16, 185, 129, 0.05)",
+                            border="1px solid rgba(16, 185, 129, 0.15)",
+                            border_radius="2px",
+                        ),
+                        rx.text(
+                            "Low",
+                            font_size="0.7rem",
+                            color=ColorToken.TEXT_SECONDARY,
+                            font_family=FontFamily.PRIMARY,
+                        ),
+                        spacing="0.5rem",
+                        align_items="center",
                     ),
-                    rx.text(
-                        "Medium Density",
-                        font_size="0.7rem",
-                        color=ColorToken.TEXT_SECONDARY,
-                        font_family=FontFamily.PRIMARY,
+                    # Medium Density (Amber)
+                    rx.hstack(
+                        rx.box(
+                            width="12px",
+                            height="12px",
+                            background_color="rgba(245, 158, 11, 0.05)",
+                            border="1px solid rgba(245, 158, 11, 0.15)",
+                            border_radius="2px",
+                        ),
+                        rx.text(
+                            "Medium",
+                            font_size="0.7rem",
+                            color=ColorToken.TEXT_SECONDARY,
+                            font_family=FontFamily.PRIMARY,
+                        ),
+                        spacing="0.5rem",
+                        align_items="center",
                     ),
-                    spacing="0.5rem",
+                    # High Density (Deep Slate)
+                    rx.hstack(
+                        rx.box(
+                            width="12px",
+                            height="12px",
+                            background_color="rgba(75, 85, 99, 0.05)",
+                            border="1px solid rgba(75, 85, 99, 0.15)",
+                            border_radius="2px",
+                        ),
+                        rx.text(
+                            "High",
+                            font_size="0.7rem",
+                            color=ColorToken.TEXT_SECONDARY,
+                            font_family=FontFamily.PRIMARY,
+                        ),
+                        spacing="0.5rem",
+                        align_items="center",
+                    ),
+                    spacing="2rem",
+                    padding="0.5rem 0",
                 ),
-                rx.hstack(
-                    rx.box(
-                        width="0.75rem",
-                        height="0.75rem",
-                        background_color="rgba(75, 85, 99, 0.4)",
-                        border_radius="0.25rem",
-                    ),
-                    rx.text(
-                        "High Density",
-                        font_size="0.7rem",
-                        color=ColorToken.TEXT_SECONDARY,
-                        font_family=FontFamily.PRIMARY,
-                    ),
-                    spacing="0.5rem",
-                ),
-                spacing="1.5rem",
+                spacing="0.5rem",
                 padding="0.75rem 0",
-                justify_content="flex-start",
             ),
             
             spacing="1rem",
