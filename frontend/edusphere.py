@@ -2,7 +2,7 @@
 EduSphere Central - Calendar Attendance Matrix & OmniSearch Command Menu
 Pure Python Reflex frontend with pristine calendar grid layout and universal command palette.
 6 classroom rows × 24 academic calendar blocks with dynamic color-coding.
-Google Gemini-inspired minimalistic search overlay with Cmd+K / Ctrl+K activation.
+Peak-tier cinematic Gemini aesthetic with glass morphism surfaces and ambient light projections.
 """
 
 import reflex as rx
@@ -12,35 +12,128 @@ from dataclasses import dataclass
 
 
 # ============================================================================
-#    DESIGN SYSTEM - Color Palette & Typography
+#    DESIGN SYSTEM - Peak-Tier Cinematic Gemini Aesthetic
 # ============================================================================
 
 class ColorToken(str, PyEnum):
-    """Gemini-inspired color palette."""
-    BACKGROUND_DEEP = "#080A10"           # Deep space black (sidebar)
-    CARD_SLATE = "#121622"                # Deep slate (content canvas)
-    BORDER_LASER = "#1E1F2E"              # Thin divider accent
-    TEXT_PRIMARY = "#FFFFFF"              # Pure white text
-    TEXT_SECONDARY = "#A0A0A0"            # Muted gray
-    ACCENT_PRIMARY = "#6B5AFF"            # Purple accent (Gemini-inspired)
-    ACCENT_HOVER = "#7D6FFF"              # Hover state
-    STATUS_SUCCESS = "#00D084"            # Success green
-    STATUS_WARNING = "#FFA500"            # Warning amber
-    STATUS_CRITICAL = "#FF6B6B"           # Critical red
+    """
+    Peak-tier Gemini-inspired color palette with advanced light properties.
+    
+    Specifications:
+    - Base Background: Absolute deep obsidian black (#020406)
+    - Glass Surfaces: Ultra-translucent frosted ink (rgba(10, 15, 26, 0.45))
+    - Laser Borders: Ultra-thin spec (1px solid rgba(255, 255, 255, 0.05))
+    - Backdrop Blur: 30px frosted glass effect
+    - Shadow Mapping: Ambient vector lighting with muted glows
+    """
+    # Canvas & surfaces
+    BACKGROUND_OBSIDIAN = "#020406"          # Absolute deep obsidian black (canvas)
+    GLASS_SURFACE = "rgba(10, 15, 26, 0.45)" # Ultra-translucent frosted ink
+    BORDER_LASER_SPEC = "rgba(255, 255, 255, 0.05)"  # Ultra-thin laser border
+    
+    # Typography
+    TEXT_PRIMARY = "#FFFFFF"                 # Pure white text
+    TEXT_SECONDARY = "#A0A0A0"               # Muted gray
+    
+    # Accent colors (with shadow mappings)
+    ACCENT_PRIMARY = "#6B5AFF"               # Violet accent
+    ACCENT_HOVER = "#7D6FFF"                 # Hover state
+    
+    # Status colors
+    STATUS_SUCCESS = "#00D084"               # Success green (emerald)
+    STATUS_WARNING = "#FFA500"               # Warning amber
+    STATUS_CRITICAL = "#EF4444"              # Critical red (coral)
+    
+    # Legacy compatibility (kept for grid)
+    CARD_SLATE = "#121622"
+    BORDER_LASER = "#1E1F2E"
     
     # Calendar grid color variants (emerald, amber, deep slate)
-    GRID_EMERALD_100 = "#10B981"          # Emerald at 10% opacity
-    GRID_EMERALD_50 = "#059669"           # Emerald at 5% opacity
-    GRID_AMBER_100 = "#F59E0B"            # Amber at 10% opacity
-    GRID_AMBER_50 = "#D97706"             # Amber at 5% opacity
-    GRID_SLATE_100 = "#4B5563"            # Deep slate at 10% opacity
-    GRID_SLATE_50 = "#2D3748"             # Deep slate at 5% opacity
+    GRID_EMERALD_100 = "#10B981"
+    GRID_EMERALD_50 = "#059669"
+    GRID_AMBER_100 = "#F59E0B"
+    GRID_AMBER_50 = "#D97706"
+    GRID_SLATE_100 = "#4B5563"
+    GRID_SLATE_50 = "#2D3748"
 
 
 class FontFamily(str, PyEnum):
     """Typography stack."""
     PRIMARY = "Inter, system-ui, -apple-system, sans-serif"
     MONO = "Courier New, monospace"
+
+
+class ShadowMapping(str, PyEnum):
+    """
+    Advanced shadow projection mappings for ambient vector lighting.
+    Each shadow represents soft, muted glowing light hitting card edges.
+    """
+    # Coral/Red shadow (critical, error states)
+    CORAL = "0 10px 40px -10px rgba(239, 68, 68, 0.12)"
+    
+    # Violet shadow (primary accent, interactive states)
+    VIOLET = "0 10px 40px -10px rgba(139, 92, 246, 0.12)"
+    
+    # Emerald shadow (success states)
+    EMERALD = "0 10px 40px -10px rgba(16, 185, 129, 0.12)"
+    
+    # Amber shadow (warning states)
+    AMBER = "0 10px 40px -10px rgba(245, 158, 11, 0.12)"
+
+
+class TransitionProfile(str, PyEnum):
+    """Micro-transition timing for smooth bezier curve response."""
+    GLASS_HOVER = "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
+
+
+# ============================================================================
+#    GLASS PANEL STYLING HELPER
+# ============================================================================
+
+def get_glass_panel_style(
+    accent_color: Optional[str] = None,
+    shadow_map: Optional[str] = None,
+    interactive: bool = True,
+) -> Dict[str, str]:
+    """
+    Generate peak-tier cinematic glass panel styling with ambient light projections.
+    
+    This function creates a frosted glass surface with advanced shadow mapping
+    that simulates soft, ambient vector lighting hitting the panel edges.
+    
+    Args:
+        accent_color: Accent color for border glow on hover (optional)
+        shadow_map: ShadowMapping preset for ambient light projection (optional)
+        interactive: Enable micro-transitions and hover effects (default: True)
+        
+    Returns:
+        Dictionary of CSS styling properties for glass morphism effect
+        
+    Specifications:
+    - Background: Ultra-translucent frosted ink (rgba(10, 15, 26, 0.45))
+    - Backdrop Filter: 30px frosted glass effect
+    - Border: 1px solid rgba(255, 255, 255, 0.05)
+    - Shadow: Ambient vector lighting glow (muted, -10px offset)
+    - Transition: Smooth cubic-bezier(0.16, 1, 0.3, 1) at 0.4s
+    - Hover Scale: 1.01% (1.0001x) upward micro-scale
+    """
+    base_style = {
+        "background_color": ColorToken.GLASS_SURFACE,
+        "backdrop_filter": "blur(30px)",
+        "border": f"1px solid {ColorToken.BORDER_LASER_SPEC}",
+        "border_radius": "0.75rem",
+        "transition": TransitionProfile.GLASS_HOVER,
+        "box_shadow": shadow_map or ShadowMapping.VIOLET,
+    }
+    
+    if interactive:
+        base_style["_hover"] = {
+            "transform": "scale(1.0001) translateY(-1px)",
+            "border_color": f"rgba(255, 255, 255, 0.1)",
+            "box_shadow": shadow_map or ShadowMapping.VIOLET,
+        }
+    
+    return base_style
 
 
 # ============================================================================
@@ -343,6 +436,7 @@ def omnisearch_panel() -> rx.Component:
     - Dynamic result filtering
     - Categorized results (3 sections)
     - Arrow key navigation
+    - Peak-tier glass morphism with ambient light
     
     Returns:
         Reflex component with search overlay
@@ -355,13 +449,13 @@ def omnisearch_panel() -> rx.Component:
             position="fixed",
             top="0",
             left="0",
-            background_color="rgba(8, 10, 16, 0.7)",
-            backdrop_filter="blur(12px)",
+            background_color="rgba(2, 4, 6, 0.8)",
+            backdrop_filter="blur(30px)",
             z_index="1000",
             on_click=lambda: OmniSearchState.toggle_search(),
         ),
         
-        # Centered search panel
+        # Centered search panel with glass morphism
         rx.box(
             rx.vstack(
                 # Search input header
@@ -400,7 +494,7 @@ def omnisearch_panel() -> rx.Component:
                         align_items="center",
                         padding="1.5rem 1.5rem 1rem 1.5rem",
                     ),
-                    border_bottom=f"1px solid {ColorToken.BORDER_LASER}",
+                    border_bottom=f"1px solid {ColorToken.BORDER_LASER_SPEC}",
                     width="100%",
                 ),
                 
@@ -568,7 +662,7 @@ def omnisearch_panel() -> rx.Component:
                         ),
                         width="100%",
                         padding="1rem 1.5rem",
-                        border_top=f"1px solid {ColorToken.BORDER_LASER}",
+                        border_top=f"1px solid {ColorToken.BORDER_LASER_SPEC}",
                     ),
                 ),
                 
@@ -582,10 +676,7 @@ def omnisearch_panel() -> rx.Component:
             width="90%",
             max_width="600px",
             max_height="600px",
-            background_color=ColorToken.CARD_SLATE,
-            border=f"1px solid {ColorToken.BORDER_LASER}",
-            border_radius="1rem",
-            box_shadow="0 20px 60px rgba(0, 0, 0, 0.6)",
+            **get_glass_panel_style(shadow_map=ShadowMapping.VIOLET),
             z_index="1001",
             display=rx.cond(OmniSearchState.is_open, "flex", "none"),
             flex_direction="column",
@@ -599,7 +690,7 @@ def omnisearch_result_item(
     selected_index: int,
 ) -> rx.Component:
     """
-    Individual search result item in the command menu.
+    Individual search result item in the command menu with glass morphism.
     
     Args:
         result: Result data dictionary
@@ -645,12 +736,13 @@ def omnisearch_result_item(
             spacing="0.75rem",
         ),
         padding="0.75rem 1.5rem",
-        background_color=f"rgba(107, 90, 255, 0.15)" if is_selected else "transparent",
+        background_color=f"rgba(107, 90, 255, 0.08)" if is_selected else "transparent",
         border_left=f"3px solid {ColorToken.ACCENT_PRIMARY}" if is_selected else "3px solid transparent",
         cursor="pointer",
-        transition="all 0.15s ease",
+        transition=TransitionProfile.GLASS_HOVER,
         _hover={
-            "background_color": f"rgba(107, 90, 255, 0.08)",
+            "background_color": f"rgba(107, 90, 255, 0.12)",
+            "border_left_color": ColorToken.ACCENT_PRIMARY,
         },
         width="100%",
     )
@@ -662,7 +754,7 @@ def omnisearch_result_item(
 
 def calendar_attendance_grid() -> rx.Component:
     """
-    Pristine calendar attendance matrix grid component.
+    Pristine calendar attendance matrix grid component with glass morphism.
     
     Features:
     - 6 classroom rows (Dist 1-6) × 24 academic calendar blocks (Week×Day)
@@ -671,6 +763,7 @@ def calendar_attendance_grid() -> rx.Component:
     - Column headers with Mon/Tue/Wed pattern
     - High-contrast micro-boxes with sharp rendering
     - Fixed height without overflow in card container
+    - Peak-tier cinematic glass surfaces with ambient light
     
     Returns:
         Reflex component with fully populated grid
@@ -699,7 +792,7 @@ def calendar_attendance_grid() -> rx.Component:
                 padding="0.75rem 0",
             ),
             
-            # Calendar grid container
+            # Calendar grid container with glass morphism
             rx.box(
                 # Main grid wrapper
                 rx.vstack(
@@ -756,7 +849,7 @@ def calendar_attendance_grid() -> rx.Component:
                                     display="flex",
                                     align_items="center",
                                     justify_content="center",
-                                    border_right=f"1px solid {ColorToken.BORDER_LASER}",
+                                    border_right=f"1px solid {ColorToken.BORDER_LASER_SPEC}",
                                     padding_right="0.5rem",
                                 ),
                                 
@@ -785,10 +878,11 @@ def calendar_attendance_grid() -> rx.Component:
                                             align_items="center",
                                             justify_content="center",
                                             padding="0.25rem",
-                                            transition="all 0.2s ease",
+                                            transition=TransitionProfile.GLASS_HOVER,
                                             _hover={
                                                 "background_color": get_density_color(grid_data[row_idx][col_idx][1])[1],
                                                 "box_shadow": f"0 2px 8px {get_density_color(grid_data[row_idx][col_idx][1])[1]}",
+                                                "transform": "scale(1.0001) translateY(-1px)",
                                             },
                                             cursor="pointer",
                                         )
@@ -814,9 +908,7 @@ def calendar_attendance_grid() -> rx.Component:
                 ),
                 
                 padding="1.25rem",
-                background_color=ColorToken.CARD_SLATE,
-                border=f"1px solid {ColorToken.BORDER_LASER}",
-                border_radius="0.75rem",
+                **get_glass_panel_style(shadow_map=ShadowMapping.EMERALD),
                 overflow_x="auto",
                 overflow_y="hidden",
                 width="100%",
@@ -880,6 +972,7 @@ def calendar_attendance_grid() -> rx.Component:
         ),
         width="100%",
         padding="0",
+        background_color=ColorToken.BACKGROUND_OBSIDIAN,
     )
 
 
