@@ -9,6 +9,7 @@
  * - Ambient color-coded glow profiles
  * - Git-style contribution heatmap
  * - Sleek authentication overlay system
+ * - Premium Gemini-style visual fluidity with ambient animations
  *
  * Design Language: Peak-tier Gemini with obsidian backdrop, emerald accents,
  * and smooth cubic-bezier micro-interactions (0.16, 1, 0.3, 1)
@@ -80,6 +81,9 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+  /* Animated Ambient Background with radial gradient depth */
+  background: radial-gradient(circle at 50% 50%, #030815, #010409);
+  animation: ambientDrift 15s ease-in-out infinite;
 }
 
 /* ============================================================================
@@ -135,6 +139,20 @@ small {
 .mono {
   font-family: 'Courier New', 'monospace';
   letter-spacing: 0.05em;
+}
+
+/* ============================================================================
+ * GEMINI-STYLE AURORA TEXT UTILITY
+ * ============================================================================ */
+
+.gemini-aurora-text {
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff 0%, #8b5cf6 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: auroraShift 4s ease-in-out infinite;
 }
 
 /* ============================================================================
@@ -198,6 +216,10 @@ small {
 .nav-button:hover {
   color: var(--accent-violet);
   transform: scale(1.02);
+}
+
+.nav-button:active {
+  transform: scale(0.97);
 }
 
 .nav-button.active {
@@ -282,6 +304,28 @@ small {
   transition: var(--gemini-transition);
   position: relative;
   overflow: hidden;
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger animation for each metric card */
+.metric-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.metric-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.metric-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.metric-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.metric-card:nth-child(n+5) {
+  animation-delay: calc(0.1s * (var(--index, 5) - 4));
 }
 
 /* Metric card hover state */
@@ -455,7 +499,7 @@ small {
   border-radius: var(--radius-card);
   padding: 1.5rem;
   transition: var(--gemini-transition);
-  animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Severity-based border colors */
@@ -575,7 +619,7 @@ button {
 .btn-primary:active,
 .btn-submit:active,
 .btn-resolve-conflict:active {
-  transform: translateY(0);
+  transform: scale(0.97);
 }
 
 /* Secondary button */
@@ -593,6 +637,10 @@ button {
   border-color: rgba(255, 255, 255, 0.4);
   color: var(--text-primary);
   transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
 }
 
 /* Input fields */
@@ -785,7 +833,7 @@ input[type="checkbox"] {
 
 .auth-submit:active,
 .btn-login:active {
-  transform: translateY(0);
+  transform: scale(0.97);
 }
 
 /* ============================================================================
@@ -815,7 +863,20 @@ input[type="checkbox"] {
   gap: 0.75rem;
   transition: var(--gemini-transition);
   height: 20rem;
-  animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger animation for podium cards */
+.podium-card:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.podium-card:nth-child(2) {
+  animation-delay: 0s;
+}
+
+.podium-card:nth-child(3) {
+  animation-delay: 0.2s;
 }
 
 /* Rank 1 (center) - prominently taller */
@@ -931,6 +992,38 @@ input[type="checkbox"] {
  * KEYFRAME ANIMATIONS
  * ============================================================================ */
 
+@keyframes ambientDrift {
+  0% {
+    background: radial-gradient(circle at 50% 50%, #030815, #010409);
+  }
+  50% {
+    background: radial-gradient(circle at 50% 50%, #050a16, #020407);
+  }
+  100% {
+    background: radial-gradient(circle at 50% 50%, #030815, #010409);
+  }
+}
+
+@keyframes auroraShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes modalSlideIn {
   from {
     opacity: 0;
@@ -1007,236 +1100,62 @@ input[type="checkbox"] {
     opacity: 1;
   }
   50% {
-    opacity: 0.7;
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
   }
 }
 
 /* ============================================================================
- * ANIMATION UTILITY CLASSES
+ * RESPONSIVE DESIGN
  * ============================================================================ */
 
-.animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.animate-fade-out {
-  animation: fadeOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slide-up {
-  animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.animate-slide-out-right {
-  animation: slideOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slide-out-left {
-  animation: slideOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-glow {
-  animation: glow 2s ease-in-out infinite;
-}
-
-.animate-pulse {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* ============================================================================
- * RESPONSIVE MEDIA QUERIES
- * ============================================================================ */
-
-/* Tablet devices (768px - 1024px) */
-@media (max-width: 1024px) {
-  #metricsGrid,
-  .metrics-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-    padding: 1.5rem;
-  }
-
-  #podiumsGrid,
-  .podiums-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    padding: 1.5rem;
-  }
-
-  .podium-card {
-    height: 18rem;
-    padding: 1rem;
-  }
-
-  .podium-card.rank-1 {
-    height: 20rem;
-  }
-
-  #heatmapGrid,
-  .heatmap-grid {
-    margin: 0 1rem;
-    padding: 1rem;
-  }
-
-  .heatmap-cell {
-    width: 10px;
-    height: 10px;
-  }
-
-  .auth-modal,
-  .modal {
-    padding: 2rem;
-    max-width: 380px;
-  }
-}
-
-/* Mobile devices (< 768px) */
 @media (max-width: 768px) {
-  :root {
-    font-size: 14px;
-  }
-
-  #mainViewport {
-    flex-direction: column;
-  }
-
-  #sidebarNav,
-  .sidebar-container {
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: var(--border-laser);
-    flex-direction: row;
-    padding: 0.5rem;
-    gap: 0.5rem;
-    justify-content: space-around;
-  }
-
-  .nav-button {
-    padding: 0.5rem 0.75rem;
-  }
-
-  .nav-button span:first-child {
-    font-size: 1.25rem;
-  }
-
-  .nav-button span:last-child {
-    display: none;
-  }
-
-  #mainCanvas,
-  .canvas-container {
-    border-radius: 0;
-    border-left: none;
-    border-top: var(--border-laser);
-    height: calc(100vh - 60px);
-  }
-
-  #metricsGrid,
-  .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-    padding: 1rem;
-  }
-
-  .metric-card {
-    padding: 1rem;
-  }
-
-  .metric-icon {
-    font-size: 1.5rem;
-  }
-
-  .metric-value {
-    font-size: 1.5rem;
-  }
-
   #podiumsGrid,
   .podiums-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 1rem;
-    align-items: stretch;
+    align-items: center;
   }
 
   .podium-card {
     height: auto;
-    min-height: 16rem;
-    padding: 1rem;
   }
 
   .podium-card.rank-1 {
     height: auto;
-    min-height: 18rem;
   }
 
-  .avatar-ring {
-    width: 3rem;
-    height: 3rem;
-    font-size: 0.875rem;
-  }
-
-  .podium-card.rank-1 .avatar-ring {
-    width: 4rem;
-    height: 4rem;
-    font-size: 1rem;
-  }
-
-  .performance-percent {
-    font-size: 1.25rem;
-  }
-
-  .podium-card.rank-1 .performance-percent {
-    font-size: 1.5rem;
+  #metricsGrid,
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 
   #heatmapGrid,
   .heatmap-grid {
     grid-template-columns: repeat(12, 1fr);
-    gap: 0.25rem;
-    margin: 0;
-    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
   }
 
-  .heatmap-cell {
-    width: 8px;
-    height: 8px;
-  }
-
-  #conflictsContainer,
-  .conflicts-container {
-    padding: 1rem;
-    gap: 0.75rem;
-  }
-
-  .conflict-card {
-    padding: 1rem;
-  }
-
-  .conflict-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
+  h2 {
+    font-size: 1.25rem;
   }
 
   .auth-modal,
   .modal {
-    width: 95%;
-    max-width: 100%;
     padding: 1.5rem;
     border-radius: var(--radius-card);
-  }
-
-  .auth-header h1,
-  .modal-header h1 {
-    font-size: 1.5rem;
-  }
-}
-
-/* Small phones (< 480px) */
-@media (max-width: 480px) {
-  :root {
-    font-size: 13px;
   }
 
   #metricsGrid,
@@ -1244,97 +1163,9 @@ input[type="checkbox"] {
     grid-template-columns: 1fr;
   }
 
-  .heatmap-cell {
-    width: 6px;
-    height: 6px;
-  }
-
   #heatmapGrid,
   .heatmap-grid {
     grid-template-columns: repeat(8, 1fr);
-    gap: 0.2rem;
-  }
-
-  .auth-modal,
-  .modal {
-    padding: 1.25rem;
-  }
-
-  .auth-header h1,
-  .modal-header h1 {
-    font-size: 1.25rem;
-  }
-
-  .btn-primary,
-  .btn-submit,
-  .btn-resolve-conflict,
-  .auth-submit,
-  .btn-login {
-    padding: 0.625rem 1rem;
-    font-size: 0.8rem;
-  }
-}
-
-/* ============================================================================
- * ACCESSIBILITY & HIGH CONTRAST MODE
- * ============================================================================ */
-
-@media (prefers-contrast: more) {
-  :root {
-    --border-laser: 2px solid rgba(255, 255, 255, 0.15);
-  }
-
-  .metric-card,
-  .conflict-card,
-  .podium-card {
-    border-width: 2px;
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Dark mode preference (system default) */
-@media (prefers-color-scheme: dark) {
-  body {
-    color-scheme: dark;
-  }
-}
-
-/* ============================================================================
- * PRINT STYLES
- * ============================================================================ */
-
-@media print {
-  #authOverlay,
-  .auth-overlay,
-  #sidebarNav,
-  .sidebar-container {
-    display: none !important;
-  }
-
-  #mainCanvas,
-  .canvas-container {
-    border-radius: 0;
-    border-left: none;
-  }
-
-  body {
-    background-color: white;
-    color: black;
-  }
-
-  .metric-card,
-  .conflict-card,
-  .podium-card {
-    background-color: white;
-    border-color: #ccc;
-    box-shadow: none;
+    margin: 0 1rem;
   }
 }
